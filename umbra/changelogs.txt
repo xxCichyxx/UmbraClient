@@ -1,4 +1,0 @@
-~ B1 (main)
-+ Zrobiono Lepsze MainMenuGui
-+ Dodano do Scaffolda Ogólny AutoJump
-+ Dodano do Scaffolda MotionModifier
