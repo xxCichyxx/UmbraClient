@@ -166,7 +166,7 @@ object APIConnecter {
                 gotData = response.body!!.string()
             }
             val details = gotData.split("///")
-            isLatest = "" == UmbraClient.clientVersionText
+            isLatest = "https://raw.githubusercontent.com/xxCichyxx/UmbraClient/refs/heads/main/umbra/version.txt" == UmbraClient.clientVersionText
             discord = "https://discord.gg/2ZBUPdxw6D"
             donate = "https://umbra-donate.mysellix.io/products"
             discordApp = details[2]

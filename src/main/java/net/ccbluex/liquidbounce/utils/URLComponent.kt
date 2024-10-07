@@ -7,13 +7,11 @@ package net.ccbluex.liquidbounce.utils
 
 object URLComponent {
     const val data2 = "https://fdpinfo.github.io/next/"
-    const val data = "https://raw.githubusercontent.com/xxCichyxx/UmbraClient/refs/heads/main"
     const val WEBSITE = "https://blockbypass.pl"
     const val STATUS = "$data2/umbra/data.txt"
-    const val STATUS2 = "$data/umbra/data.txt"
-    const val CHANGELOGS = "$data/umbra/changelogs.txt"
-    const val BUGS = "$data/umbra/bugs.txt"
-    const val DONORS = "$data/donors/"
-    const val PICTURES = "$data/pictures/"
-    const val FONTS = "$data/cloud/fonts/"
+    const val CHANGELOGS = "$data2/umbra/changelogs.txt"
+    const val BUGS = "$data2/umbra/bugs.txt"
+    const val DONORS = "$data2/donors/"
+    const val PICTURES = "$data2/pictures/"
+    const val FONTS = "$data2/cloud/fonts/"
 }

@@ -72,7 +72,7 @@ object UmbraClient {
      * Defines if the client is in development mode.
      * This will enable update checking on commit time instead of regular legacy versioning.
      */
-    const val IN_DEV = true
+    const val IN_DEV = false
 
     val clientTitle = CLIENT_NAME + if (IN_DEV) " | DEV BUILD" else ""
 
