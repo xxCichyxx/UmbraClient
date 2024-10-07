@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "umbraclient",
+    "name": "UmbraClient",
+    "description": "A free mixin-based injection hacked-client",
+    "version": "${version}",
+    "mcversion": "1.8.9",
+    "url": "https://blockbypass.pl",
+    "updateUrl": "",
+    "authorList": ["xxCichyxx"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
