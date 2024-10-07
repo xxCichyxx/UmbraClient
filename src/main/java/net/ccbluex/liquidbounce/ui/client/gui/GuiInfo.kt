@@ -56,8 +56,8 @@ class GuiInfo(private val prevGui: GuiScreen) : GuiScreen() {
             1 -> MiscUtils.showURL(URLComponent.WEBSITE)
             2 -> MiscUtils.showURL(APIConnecter.discord)
             3 -> mc.displayGuiScreen(GuiClientConfiguration(this))
-            5 -> MiscUtils.showURL(donate)
-            6 -> mc.displayGuiScreen(prevGui)
+            4 -> MiscUtils.showURL(donate)
+            5 -> mc.displayGuiScreen(prevGui)
         }
     }
 }
