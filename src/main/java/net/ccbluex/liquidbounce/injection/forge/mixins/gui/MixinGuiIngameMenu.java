@@ -5,7 +5,7 @@
  */
 package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 
-import net.ccbluex.liquidbounce.FDPClient;
+import net.ccbluex.liquidbounce.UmbraClient;
 import net.ccbluex.liquidbounce.ui.client.gui.GuiTheme;
 import net.ccbluex.liquidbounce.utils.ServerUtils;
 import net.minecraft.client.gui.GuiButton;
@@ -47,7 +47,7 @@ public abstract class MixinGuiIngameMenu extends MixinGuiScreen {
         }
 
         if (button.id == 1078) {
-            mc.displayGuiScreen(FDPClient.INSTANCE.getKeyBindManager());
+            mc.displayGuiScreen(UmbraClient.INSTANCE.getKeyBindManager());
         }
 
         if (button.id == 1068) {

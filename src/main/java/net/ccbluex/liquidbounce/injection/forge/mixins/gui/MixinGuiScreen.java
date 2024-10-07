@@ -1,11 +1,11 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 
-import net.ccbluex.liquidbounce.FDPClient;
+import net.ccbluex.liquidbounce.UmbraClient;
 import net.ccbluex.liquidbounce.features.command.CommandManager;
 import net.ccbluex.liquidbounce.features.module.modules.client.HUDModule;
 import net.ccbluex.liquidbounce.ui.client.gui.GuiClientConfiguration;
@@ -90,7 +90,7 @@ public abstract class MixinGuiScreen {
         disableFog();
 
         if (GuiClientConfiguration.Companion.getEnabledCustomBackground()) {
-            final Background background = FDPClient.INSTANCE.getBackground();
+            final Background background = UmbraClient.INSTANCE.getBackground();
 
             if (background == null) {
                 // Use default background shader

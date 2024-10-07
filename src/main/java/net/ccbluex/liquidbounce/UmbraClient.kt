@@ -1,7 +1,7 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce
 
@@ -50,31 +50,31 @@ import net.ccbluex.liquidbounce.utils.render.MiniMapRegister
 import net.ccbluex.liquidbounce.utils.timing.TickedActions
 import net.ccbluex.liquidbounce.utils.timing.WaitTickUtils
 
-object FDPClient {
+object UmbraClient {
 
     /**
      * Client Information
      *
      * This has all of the basic information.
      */
-    const val CLIENT_NAME = "FDPClient"
-    const val CLIENT_AUTHOR = "Zywl 1zuna"
+    const val CLIENT_NAME = "UmbraClient"
+    const val CLIENT_AUTHOR = "xxCichyxx"
     const val CLIENT_CLOUD = "https://cloud.liquidbounce.net/LiquidBounce"
     const val CLIENT_WEBSITE = "blockbypass.pl"
     const val CLIENT_VERSION = "b1"
-    
-    val clientVersionText = "b1"
-    val clientVersionNumber = 0 // version format: "b<VERSION>" on legacy
-    val clientCommit = "Umbra Client"
-    val clientBranch = "main"
+
+    val clientVersionText = gitInfo["git.build.version"]?.toString() ?: "unknown"
+    val clientVersionNumber = clientVersionText.substring(1).toIntOrNull() ?: 0 // version format: "b<VERSION>" on legacy
+    val clientCommit = gitInfo["git.commit.id.abbrev"]?.let { "git-$it" } ?: "unknown"
+    val clientBranch = gitInfo["git.branch"]?.toString() ?: "unknown"
 
     /**
      * Defines if the client is in development mode.
      * This will enable update checking on commit time instead of regular legacy versioning.
      */
-    const val IN_DEV = false
+    const val IN_DEV = true
 
-    val clientTitle = CLIENT_NAME + " " + clientVersionText
+    val clientTitle = CLIENT_NAME + if (IN_DEV) " | DEV BUILD" else ""
 
     var isStarting = true
     var isLoadingConfig = true

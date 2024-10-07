@@ -1,11 +1,11 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.injection.forge.mixins.client;
 
-import net.ccbluex.liquidbounce.FDPClient;
+import net.ccbluex.liquidbounce.UmbraClient;
 import net.ccbluex.liquidbounce.features.module.modules.combat.TickBase;
 import net.ccbluex.liquidbounce.handler.api.ClientUpdate;
 import net.ccbluex.liquidbounce.event.*;
@@ -112,7 +112,7 @@ public abstract class MixinMinecraft {
 
     @Inject(method = "startGame", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;checkGLError(Ljava/lang/String;)V", ordinal = 2, shift = At.Shift.AFTER))
     private void startGame(CallbackInfo callbackInfo) {
-        FDPClient.INSTANCE.startClient();
+        UmbraClient.INSTANCE.startClient();
     }
 
     @Inject(method = "startGame", at = @At(value = "NEW", target = "net/minecraft/client/renderer/texture/TextureManager"))
@@ -140,7 +140,7 @@ public abstract class MixinMinecraft {
     @Inject(method = "createDisplay", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/Display;setTitle(Ljava/lang/String;)V", shift = At.Shift.AFTER))
     private void createDisplay(CallbackInfo callbackInfo) {
         if (GuiClientConfiguration.Companion.getEnabledClientTitle()) {
-            Display.setTitle(FDPClient.INSTANCE.getClientTitle());
+            Display.setTitle(UmbraClient.INSTANCE.getClientTitle());
         }
     }
 
@@ -210,7 +210,7 @@ public abstract class MixinMinecraft {
 
     @Inject(method = "shutdown", at = @At("HEAD"))
     private void shutdown(CallbackInfo callbackInfo) {
-        FDPClient.INSTANCE.stopClient();
+        UmbraClient.INSTANCE.stopClient();
     }
 
     @Inject(method = "clickMouse", at = @At("HEAD"))

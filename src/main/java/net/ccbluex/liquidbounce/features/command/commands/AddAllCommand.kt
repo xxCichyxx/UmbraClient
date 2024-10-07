@@ -1,11 +1,11 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.features.command.commands
 
-import net.ccbluex.liquidbounce.FDPClient
+import net.ccbluex.liquidbounce.UmbraClient
 import net.ccbluex.liquidbounce.features.command.Command
 import net.ccbluex.liquidbounce.file.configs.FriendsConfig
 import net.ccbluex.liquidbounce.script.api.global.Chat
@@ -21,7 +21,7 @@ object AddAllCommand : Command("addall", *arrayOf<String>("")) {
         if (arguments.size == 2) {
             val tag = translateAlternateColorCodes(arguments[1])
             val count = AtomicInteger(0)
-            val config: FriendsConfig = FDPClient.fileManager.friendsConfig
+            val config: FriendsConfig = UmbraClient.fileManager.friendsConfig
             val presistent = arguments[0].contains("")
 
             mc.thePlayer.sendQueue.playerInfoMap

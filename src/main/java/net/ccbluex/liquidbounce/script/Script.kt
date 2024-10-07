@@ -9,9 +9,9 @@ import jdk.internal.dynalink.beans.StaticClass
 import jdk.nashorn.api.scripting.JSObject
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory
 import jdk.nashorn.api.scripting.ScriptUtils
-import net.ccbluex.liquidbounce.FDPClient.commandManager
-import net.ccbluex.liquidbounce.FDPClient.moduleManager
-import net.ccbluex.liquidbounce.FDPClient.scriptManager
+import net.ccbluex.liquidbounce.UmbraClient.commandManager
+import net.ccbluex.liquidbounce.UmbraClient.moduleManager
+import net.ccbluex.liquidbounce.UmbraClient.scriptManager
 import net.ccbluex.liquidbounce.features.command.Command
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.Category

@@ -1,13 +1,13 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.ui.client.keybind
 
-import net.ccbluex.liquidbounce.FDPClient.keyBindManager
-import net.ccbluex.liquidbounce.FDPClient.macroManager
-import net.ccbluex.liquidbounce.FDPClient.moduleManager
+import net.ccbluex.liquidbounce.UmbraClient.keyBindManager
+import net.ccbluex.liquidbounce.UmbraClient.macroManager
+import net.ccbluex.liquidbounce.UmbraClient.moduleManager
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.handler.macro.Macro
 import net.ccbluex.liquidbounce.ui.font.Fonts.font35
@@ -20,7 +20,7 @@ import java.awt.Color
 
 /**
  * @author liulihaocai
- * FDPClient
+ * UmbraClient
  */
 class KeySelectUI(val info: KeyInfo) : PopUI("Select a module to bind") {
     private var str = ""

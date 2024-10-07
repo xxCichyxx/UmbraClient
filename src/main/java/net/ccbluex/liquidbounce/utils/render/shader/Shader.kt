@@ -1,7 +1,7 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.utils.render.shader
 
@@ -28,11 +28,11 @@ abstract class Shader : MinecraftInstance {
         val fragmentShaderID: Int
         
         try {
-            val vertexStream = javaClass.getResourceAsStream("/assets/minecraft/fdpclient/shader/vertex.vert")
+            val vertexStream = javaClass.getResourceAsStream("/assets/minecraft/umbraclient/shader/vertex.vert")
             vertexShaderID = createShader(IOUtils.toString(vertexStream), ARBVertexShader.GL_VERTEX_SHADER_ARB)
             IOUtils.closeQuietly(vertexStream)
             
-            val fragmentStream = javaClass.getResourceAsStream("/assets/minecraft/fdpclient/shader/fragment/$fragmentShader")
+            val fragmentStream = javaClass.getResourceAsStream("/assets/minecraft/umbraclient/shader/fragment/$fragmentShader")
             fragmentShaderID = createShader(IOUtils.toString(fragmentStream), ARBFragmentShader.GL_FRAGMENT_SHADER_ARB)
             IOUtils.closeQuietly(fragmentStream)
         } catch (e: Exception) {
@@ -62,7 +62,7 @@ abstract class Shader : MinecraftInstance {
         val vertexShaderID: Int
         val fragmentShaderID: Int
         
-        val vertexStream = javaClass.getResourceAsStream("/assets/minecraft/fdpclient/shader/vertex.vert")
+        val vertexStream = javaClass.getResourceAsStream("/assets/minecraft/umbraclient/shader/vertex.vert")
         vertexShaderID = createShader(IOUtils.toString(vertexStream), ARBVertexShader.GL_VERTEX_SHADER_ARB)
         IOUtils.closeQuietly(vertexStream)
         

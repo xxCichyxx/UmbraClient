@@ -1,11 +1,11 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.utils
 
-import net.ccbluex.liquidbounce.FDPClient
+import net.ccbluex.liquidbounce.UmbraClient
 import net.ccbluex.liquidbounce.utils.ClientUtils.LOGGER
 import net.minecraft.client.renderer.texture.DynamicTexture
 import net.minecraft.entity.player.EntityPlayer
@@ -52,7 +52,7 @@ object APIConnecter {
             if (i == image && l == location)
                 return s
         }
-        return ResourceLocation("fdpclient/temp.png")
+        return ResourceLocation("umbraclient/temp.png")
     }
 
     fun loadPictures() {
@@ -86,7 +86,7 @@ object APIConnecter {
                         fileName,
                         picType,
                         MinecraftInstance.mc.textureManager.getDynamicTextureLocation(
-                            FDPClient.clientTitle,
+                            UmbraClient.clientTitle,
                             DynamicTexture(gotImage)
                         )
                     )
@@ -139,7 +139,7 @@ object APIConnecter {
                     Pair(
                         uuid,
                         MinecraftInstance.mc.textureManager.getDynamicTextureLocation(
-                            FDPClient.CLIENT_NAME,
+                            UmbraClient.CLIENT_NAME,
                             DynamicTexture(gotCapes)
                         )
                     )
@@ -166,7 +166,7 @@ object APIConnecter {
                 gotData = response.body!!.string()
             }
             val details = gotData.split("///")
-            isLatest = details[5] == FDPClient.clientVersionText
+            isLatest = details[5] == UmbraClient.clientVersionText
             discord = details[4]
             donate = details[3]
             discordApp = details[2]

@@ -5,7 +5,7 @@
  */
 package net.ccbluex.liquidbounce.ui.client.clickgui.elements
 
-import net.ccbluex.liquidbounce.FDPClient.clickGui
+import net.ccbluex.liquidbounce.UmbraClient.clickGui
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.modules.client.ClickGUIModule.spacedModules
 import net.minecraftforge.fml.relauncher.Side

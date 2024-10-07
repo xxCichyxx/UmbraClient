@@ -63,19 +63,19 @@ public abstract class MixinGuiChat extends MixinGuiScreen {
         if (i != this.sentHistoryCursor) {
             if (i == j) {
                 this.sentHistoryCursor = j;
-                fDPClient$setText(this.historyBuffer);
+                UmbraClient$setText(this.historyBuffer);
             } else {
                 if (this.sentHistoryCursor == j) {
                     this.historyBuffer = this.inputField.getText();
                 }
 
-                fDPClient$setText(this.mc.ingameGUI.getChatGUI().getSentMessages().get(i));
+                UmbraClient$setText(this.mc.ingameGUI.getChatGUI().getSentMessages().get(i));
                 this.sentHistoryCursor = i;
             }
         }
     }
 
-    private void fDPClient$setText(String text){
+    private void UmbraClient$setText(String text){
         final ChatControl chatControl = ChatControl.INSTANCE;
 
         if(text.startsWith(String.valueOf(CommandManager.INSTANCE.getPrefix()))) {

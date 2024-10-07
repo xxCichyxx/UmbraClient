@@ -1,12 +1,12 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.handler.api
 
 import com.google.gson.annotations.SerializedName
-import net.ccbluex.liquidbounce.FDPClient
+import net.ccbluex.liquidbounce.UmbraClient
 import net.ccbluex.liquidbounce.file.FileManager.PRETTY_GSON
 import net.ccbluex.liquidbounce.utils.misc.HttpUtils.post
 
@@ -91,7 +91,7 @@ object ClientApi {
      * User agent
      * LiquidBounce/<version> (<commit>, <branch>, <build-type>, <platform>)
      */
-    private val ENDPOINT_AGENT = "${FDPClient.CLIENT_NAME}/${FDPClient.clientVersionText} (${FDPClient.clientCommit}, ${FDPClient.clientBranch}, ${if (FDPClient.IN_DEV) "dev" else "release"}, ${System.getProperty("os.name")})"
+    private val ENDPOINT_AGENT = "${UmbraClient.CLIENT_NAME}/${UmbraClient.clientVersionText} (${UmbraClient.clientCommit}, ${UmbraClient.clientBranch}, ${if (UmbraClient.IN_DEV) "dev" else "release"}, ${System.getProperty("os.name")})"
 
     /**
      * Session token

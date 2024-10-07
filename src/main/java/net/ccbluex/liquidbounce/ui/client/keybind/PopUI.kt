@@ -1,7 +1,7 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.ui.client.keybind
 
@@ -12,7 +12,7 @@ import java.awt.Color
 
 /**
  * @author liulihaocai
- * FDPClient
+ * UmbraClient
  */
 open class PopUI(val title: String) {
     val baseWidth = 150

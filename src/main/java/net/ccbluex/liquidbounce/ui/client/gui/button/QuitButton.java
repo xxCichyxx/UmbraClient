@@ -1,7 +1,7 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.ui.client.gui.button;
 
@@ -21,7 +21,7 @@ import static net.ccbluex.liquidbounce.utils.render.RenderUtils.drawRoundOutline
 public class QuitButton extends ImageButton {
 
 	public QuitButton(int x, int y) {
-		super("QUIT", new ResourceLocation("fdpclient/mainmenu/exit.png"), x, y);
+		super("QUIT", new ResourceLocation("umbraclient/mainmenu/exit.png"), x, y);
 	}
 
 	@Override

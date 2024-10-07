@@ -1,7 +1,7 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.injection.forge;
 
@@ -17,7 +17,7 @@ import java.util.Map;
 public class MixinLoader implements IFMLLoadingPlugin {
 
     public MixinLoader() {
-        System.out.println("[FDPCLIENT] Injecting with IFMLLoadingPlugin.");
+        System.out.println("[UmbraClient] Injecting with IFMLLoadingPlugin.");
 
         MixinBootstrap.init();
         Mixins.addConfiguration("umbraclient.forge.mixins.json");

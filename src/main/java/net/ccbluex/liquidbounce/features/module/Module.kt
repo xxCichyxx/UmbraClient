@@ -1,11 +1,11 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.features.module
 
-import net.ccbluex.liquidbounce.FDPClient.isStarting
+import net.ccbluex.liquidbounce.UmbraClient.isStarting
 import net.ccbluex.liquidbounce.event.Listenable
 import net.ccbluex.liquidbounce.features.module.modules.client.GameDetector
 import net.ccbluex.liquidbounce.file.FileManager.modulesConfig

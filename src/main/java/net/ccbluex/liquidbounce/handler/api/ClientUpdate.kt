@@ -1,13 +1,13 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.handler.api
 
-import net.ccbluex.liquidbounce.FDPClient
-import net.ccbluex.liquidbounce.FDPClient.clientVersionNumber
-import net.ccbluex.liquidbounce.FDPClient.IN_DEV
+import net.ccbluex.liquidbounce.UmbraClient
+import net.ccbluex.liquidbounce.UmbraClient.clientVersionNumber
+import net.ccbluex.liquidbounce.UmbraClient.IN_DEV
 import net.ccbluex.liquidbounce.utils.ClientUtils.LOGGER
 import java.text.SimpleDateFormat
 import java.util.*
@@ -16,7 +16,7 @@ import net.ccbluex.liquidbounce.handler.api.ClientApi.requestNewestBuildEndpoint
 object ClientUpdate {
 
     val gitInfo = Properties().also {
-        val inputStream = FDPClient::class.java.classLoader.getResourceAsStream("git.properties")
+        val inputStream = UmbraClient::class.java.classLoader.getResourceAsStream("git.properties")
 
         if (inputStream != null) {
             it.load(inputStream)
@@ -28,7 +28,7 @@ object ClientUpdate {
     val newestVersion by lazy {
         // https://api.liquidbounce.net/api/v1/version/builds/legacy
         try {
-            requestNewestBuildEndpoint(branch = FDPClient.clientBranch, release = !IN_DEV)
+            requestNewestBuildEndpoint(branch = UmbraClient.clientBranch, release = !IN_DEV)
         } catch (e: Exception) {
             LOGGER.error("Unable to receive update information", e)
             return@lazy null

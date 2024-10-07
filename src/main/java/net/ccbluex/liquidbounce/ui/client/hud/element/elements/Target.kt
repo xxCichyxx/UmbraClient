@@ -5,7 +5,7 @@
  */
 package net.ccbluex.liquidbounce.ui.client.hud.element.elements
 
-import net.ccbluex.liquidbounce.FDPClient
+import net.ccbluex.liquidbounce.UmbraClient
 import net.ccbluex.liquidbounce.ui.client.hud.designer.GuiHudDesigner
 import net.ccbluex.liquidbounce.ui.client.hud.element.Border
 import net.ccbluex.liquidbounce.ui.client.hud.element.Element
@@ -51,7 +51,7 @@ class Targets : Element(-46.0, -40.0, 1F, Side(Side.Horizontal.MIDDLE, Side.Vert
     private val bgBlueValue by IntegerValue("Background-Blue", 0, 0.. 255)
     private val bgAlphaValue by IntegerValue("Background-Alpha", 120, 0.. 255)
 
-    var target = FDPClient.combatManager.target
+    var target = UmbraClient.combatManager.target
     override val values: List<Value<*>>
         get() {
             val valueList = mutableListOf<Value<*>>()
@@ -82,8 +82,8 @@ class Targets : Element(-46.0, -40.0, 1F, Side(Side.Horizontal.MIDDLE, Side.Vert
 
     override fun drawElement(): Border? {
         val mainStyle = getCurrentStyle(styleValue.get()) ?: return null
-        val actualTarget = if (FDPClient.combatManager.target != null && (!onlyPlayer || FDPClient.combatManager.target is EntityPlayer)) FDPClient.combatManager.target
-        else if (FDPClient.combatManager.target != null && (!onlyPlayer || FDPClient.combatManager.target is EntityPlayer)) FDPClient.combatManager.target
+        val actualTarget = if (UmbraClient.combatManager.target != null && (!onlyPlayer || UmbraClient.combatManager.target is EntityPlayer)) UmbraClient.combatManager.target
+        else if (UmbraClient.combatManager.target != null && (!onlyPlayer || UmbraClient.combatManager.target is EntityPlayer)) UmbraClient.combatManager.target
         else if ((mc.currentScreen is GuiChat && showinchat) || mc.currentScreen is GuiHudDesigner) mc.thePlayer
         else null
         if (fadeValue) {

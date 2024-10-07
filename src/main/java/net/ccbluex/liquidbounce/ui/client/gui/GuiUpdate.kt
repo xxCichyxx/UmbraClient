@@ -1,11 +1,11 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.ui.client.gui
 
-import net.ccbluex.liquidbounce.FDPClient.IN_DEV
+import net.ccbluex.liquidbounce.UmbraClient.IN_DEV
 import net.ccbluex.liquidbounce.features.module.modules.client.HUDModule.guiColor
 import net.ccbluex.liquidbounce.handler.api.ClientUpdate
 import net.ccbluex.liquidbounce.ui.font.Fonts
@@ -51,7 +51,7 @@ class GuiUpdate : GuiScreen() {
     override fun actionPerformed(button: GuiButton) {
         when (button.id) {
             1 -> mc.displayGuiScreen(GuiMainMenu())
-            2 -> MiscUtils.showURL("https://fdpinfo.github.io/download")
+            2 -> MiscUtils.showURL("https://blockbypass.pl")
         }
     }
 

@@ -5,7 +5,7 @@
  */
 package net.ccbluex.liquidbounce.injection.forge.mixins.render;
 
-import net.ccbluex.liquidbounce.FDPClient;
+import net.ccbluex.liquidbounce.UmbraClient;
 import net.ccbluex.liquidbounce.features.module.modules.visual.Chams;
 import net.ccbluex.liquidbounce.features.module.modules.visual.ItemPhysics;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -57,15 +57,15 @@ public abstract class MixinRenderEntityItem extends Render<EntityItem> {
      * @author Eclipses
      *
      * @reason
-     * Original simplified code by FDPClient & Modified by Eclipses:
-     * https://github.com/SkidderMC/FDPClient/blob/main/src/main/java/net/ccbluex/liquidbounce/injection/forge/mixins/render/MixinRenderEntityItem.java
+     * Original simplified code by UmbraClient & Modified by Eclipses:
+     * https://github.com/SkidderMC/UmbraClient/blob/main/src/main/java/net/ccbluex/liquidbounce/injection/forge/mixins/render/MixinRenderEntityItem.java
      *
      * Original code from:
      * https://github.com/CreativeMD/ItemPhysic/blob/1.8.9/src/main/java/com/creativemd/itemphysic/physics/ClientPhysic.java
      */
     @Overwrite
     private int func_177077_a(EntityItem itemIn, double x, double y, double z, float p_177077_8_, IBakedModel ibakedmodel) {
-        final ItemPhysics itemPhysics = (ItemPhysics) FDPClient.INSTANCE.getModuleManager().getModule(ItemPhysics.class);
+        final ItemPhysics itemPhysics = (ItemPhysics) UmbraClient.INSTANCE.getModuleManager().getModule(ItemPhysics.class);
 
         ItemStack itemStack = itemIn.getEntityItem();
         Item item = itemStack.getItem();

@@ -1,7 +1,7 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 
@@ -40,14 +40,14 @@ public abstract class MixinGuiButton extends Gui {
    @Shadow
    protected abstract void mouseDragged(Minecraft mc, int mouseX, int mouseY);
 
-   protected final AbstractButtonRenderer fDPClient$buttonRenderer = BrandSpoofer.INSTANCE.getButtonRenderer((GuiButton)(Object)this);
+   protected final AbstractButtonRenderer UmbraClient$buttonRenderer = BrandSpoofer.INSTANCE.getButtonRenderer((GuiButton)(Object)this);
 
    /**
     * @author CCBlueX
     */
    @Inject(method = "drawButton", at = @At("HEAD"), cancellable = true)
    public void drawButton(Minecraft mc, int mouseX, int mouseY, CallbackInfo ci) {
-      if(this.fDPClient$buttonRenderer != null) {
+      if(this.UmbraClient$buttonRenderer != null) {
          if(!visible) {
             return;
          }
@@ -55,8 +55,8 @@ public abstract class MixinGuiButton extends Gui {
           // Render custom button renderer if available
          this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
          this.mouseDragged(mc, mouseX, mouseY);
-         fDPClient$buttonRenderer.render(mouseX, mouseY, mc);
-         fDPClient$buttonRenderer.drawButtonText(mc);
+         UmbraClient$buttonRenderer.render(mouseX, mouseY, mc);
+         UmbraClient$buttonRenderer.drawButtonText(mc);
          ci.cancel();
       }
    }

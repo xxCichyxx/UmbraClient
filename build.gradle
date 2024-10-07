@@ -146,7 +146,7 @@ jar {
 mixin {
     disableRefMapWarning = true
     defaultObfuscationEnv searge
-    add sourceSets.main, "fdpclient.mixins.refmap.json"
+    add sourceSets.main, "umbraclient.mixins.refmap.json"
 }
 
 reobf {

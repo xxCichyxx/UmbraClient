@@ -1,13 +1,13 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.ui.client.keybind
 
-import net.ccbluex.liquidbounce.FDPClient
-import net.ccbluex.liquidbounce.FDPClient.macroManager
-import net.ccbluex.liquidbounce.FDPClient.moduleManager
+import net.ccbluex.liquidbounce.UmbraClient
+import net.ccbluex.liquidbounce.UmbraClient.macroManager
+import net.ccbluex.liquidbounce.UmbraClient.moduleManager
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.handler.macro.Macro
 import net.ccbluex.liquidbounce.ui.font.Fonts.font35
@@ -22,8 +22,8 @@ import org.lwjgl.opengl.GL11.*
 import java.awt.Color
 
 /**
- * @author Zywl And LiuLihaocai
- * FDPClient
+ * @author xxcichyxx
+ * UmbraClient
  */
 class KeyInfo(
     val posX: Float,
@@ -130,7 +130,7 @@ class KeyInfo(
     }
 
     fun click(mouseX: Float, mouseY: Float) {
-        val keyBindMgr = FDPClient.keyBindManager
+        val keyBindMgr = UmbraClient.keyBindManager
 
         if (keyBindMgr.nowDisplayKey == null) {
             keyBindMgr.nowDisplayKey = this

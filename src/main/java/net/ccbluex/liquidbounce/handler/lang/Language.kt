@@ -1,7 +1,7 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.handler.lang
 
@@ -45,7 +45,7 @@ object LanguageManager : MinecraftInstance() {
     fun loadLanguages() {
         for (language in knownLanguages) {
             runCatching {
-                val languageFile = javaClass.getResourceAsStream("/assets/minecraft/fdpclient/lang/$language.json")
+                val languageFile = javaClass.getResourceAsStream("/assets/minecraft/umbraclient/lang/$language.json")
                 val languageJson = PRETTY_GSON.fromJson(languageFile.bufferedReader(), Language::class.java)
                 languageMap[language] = languageJson
             }.onSuccess {

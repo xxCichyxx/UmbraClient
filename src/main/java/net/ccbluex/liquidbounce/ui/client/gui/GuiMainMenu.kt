@@ -1,21 +1,14 @@
-/*
- * FDPClient Hacked Client
- * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
- */
 package net.ccbluex.liquidbounce.ui.client.gui
 
-import net.ccbluex.liquidbounce.FDPClient.CLIENT_NAME
-import net.ccbluex.liquidbounce.FDPClient.clientVersionText
+import net.ccbluex.liquidbounce.UmbraClient.CLIENT_NAME
+import net.ccbluex.liquidbounce.UmbraClient.clientVersionText
 import net.ccbluex.liquidbounce.features.module.modules.client.HUDModule.guiColor
 import net.ccbluex.liquidbounce.ui.client.gui.button.ImageButton
 import net.ccbluex.liquidbounce.ui.client.gui.button.QuitButton
 import net.ccbluex.liquidbounce.ui.client.altmanager.GuiAltManager
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.ui.font.Fonts.minecraftFont
-import net.ccbluex.liquidbounce.utils.APIConnecter.bugs
 import net.ccbluex.liquidbounce.utils.APIConnecter.canConnect
-import net.ccbluex.liquidbounce.utils.APIConnecter.changelogs
 import net.ccbluex.liquidbounce.utils.APIConnecter.checkBugs
 import net.ccbluex.liquidbounce.utils.APIConnecter.checkChangelogs
 import net.ccbluex.liquidbounce.utils.APIConnecter.checkStatus
@@ -37,70 +30,61 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
     private lateinit var btnSinglePlayer: GuiButton
     private lateinit var btnMultiplayer: GuiButton
     private lateinit var btnClientOptions: GuiButton
-    private lateinit var btnConnectAPI: ImageButton
+    private lateinit var btnThemes: GuiButton
+    private lateinit var btnScripts: GuiButton
+    private lateinit var btnServerStatus: GuiButton
+    private lateinit var btnAltManager: GuiButton
     private lateinit var btnCommitInfo: ImageButton
-    private lateinit var btnCosmetics: ImageButton
     private lateinit var btnMinecraftOptions: ImageButton
     private lateinit var btnLanguage: ImageButton
-    private lateinit var btnForgeModList: ImageButton
     private lateinit var btnQuit: QuitButton
-    private lateinit var btnAddAccount: ImageButton
 
     override fun initGui() {
-        logo = ResourceLocation("fdpclient/mainmenu/logo.png")
-        val yPos = height - 20
-        val buttonWidth = 133
+        logo = ResourceLocation("umbraclient/mainmenu/logo.png")
+        val yPos = height - 30  // Pozycja dolna dla obrazków
+        val buttonWidth = 133   // Szerokość przycisków
         val buttonHeight = 20
+        val buttonSpacing = 8  // Odstęp między przyciskami
 
-        btnSinglePlayer = GuiButton(0, width / 2 - 66, height / 2 - 80 + 70, buttonWidth, buttonHeight, "SINGLE PLAYER")
-        btnMultiplayer = GuiButton(1, width / 2 - 66, height / 2 - 80 + 95 - 2, buttonWidth, buttonHeight, "MULTI PLAYER")
-        btnClientOptions = GuiButton(2, width / 2 - 66, height / 2 - 80 + 120 - 4, buttonWidth, buttonHeight, "SETTINGS")
+
+        // Ustawienie przycisków "Single Player", "Multi Player"
+        btnSinglePlayer = GuiButton(0, width / 2 - buttonWidth - buttonSpacing / 2, height / 2, buttonWidth, buttonHeight, "SINGLE PLAYER")
+        btnMultiplayer = GuiButton(1, width / 2 + buttonSpacing / 2, height / 2, buttonWidth, buttonHeight, "MULTIPLAYER")
+
+        // Ustalamy Y dla nowych przycisków
+        val additionalButtonY = height / 2 + buttonHeight + buttonSpacing  // Ustalamy Y dla nowych przycisków
+
+        // Nowe przyciski: "THEMES", "SCRIPTS", "SERVER STATUS", "ALT MANAGER"
+        btnThemes = GuiButton(3, width / 2 - buttonWidth - buttonSpacing / 2, additionalButtonY, buttonWidth, buttonHeight, "THEMES")
+        btnScripts = GuiButton(4, width / 2 + buttonSpacing / 2, additionalButtonY, buttonWidth, buttonHeight, "SCRIPTS")
+        btnServerStatus = GuiButton(5, width / 2 - buttonWidth - buttonSpacing / 2, additionalButtonY + buttonHeight + buttonSpacing, buttonWidth, buttonHeight, "SERVER STATUS")
+        btnAltManager = GuiButton(6, width / 2 + buttonSpacing / 2, additionalButtonY + buttonHeight + buttonSpacing, buttonWidth, buttonHeight, "ALT MANAGER")
+
+        // Przycisk "OPTIONS" pod innymi przyciskami
+        btnClientOptions = GuiButton(2, width / 2 - buttonWidth / 2, additionalButtonY + buttonHeight * 2 + buttonSpacing * 2, buttonWidth, buttonHeight, "MINECRAFT SETTINGS")
 
         btnCommitInfo = ImageButton(
             "COMMIT INFO",
-            ResourceLocation("fdpclient/mainmenu/github.png"),
-            width / 2 - 30,
-            yPos
-        )
-        btnCosmetics = ImageButton(
-            "COSMETICS",
-            ResourceLocation("fdpclient/mainmenu/cosmetics.png"),
-            width / 2 - 15,
+            ResourceLocation("umbraclient/mainmenu/github.png"),
+            width / 2 - 23,
             yPos
         )
         btnMinecraftOptions = ImageButton(
-            "MINECRAFT SETTINGS",
-            ResourceLocation("fdpclient/mainmenu/cog.png"),
-            width / 2,
+            "OPTIONS",
+            ResourceLocation("umbraclient/mainmenu/cog.png"),
+            width / 2 - 5,
             yPos
         )
         btnLanguage = ImageButton(
             "LANGUAGE",
-            ResourceLocation("fdpclient/mainmenu/globe.png"),
-            width / 2 + 15,
+            ResourceLocation("umbraclient/mainmenu/globe.png"),
+            width / 2 + 13,
             yPos
         )
-        btnForgeModList = ImageButton(
-            "FORGE MODS",
-            ResourceLocation("fdpclient/mainmenu/forge.png"),
-            width / 2 + 30,
-            yPos
-        )
-        btnAddAccount = ImageButton(
-            "ALT MANAGER",
-            ResourceLocation("fdpclient/mainmenu/add-account.png"),
-            width - 55,
-            7
-        )
-        btnConnectAPI = ImageButton(
-            "Connect API",
-            ResourceLocation("fdpclient/mainmenu/reload.png"),
-            width - 37,
-            7
-        )
-        btnQuit = QuitButton(width - 17, 7)
+        btnQuit = QuitButton(width - 25, 10)
 
-        buttonList.addAll(listOf(btnSinglePlayer, btnMultiplayer, btnClientOptions))
+        // Dodanie przycisków do listy
+        buttonList.addAll(listOf(btnSinglePlayer, btnMultiplayer, btnClientOptions, btnThemes, btnScripts, btnServerStatus, btnAltManager))
     }
 
     override fun mouseClicked(mouseX: Int, mouseY: Int, button: Int) {
@@ -111,19 +95,9 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
 
             when {
                 btnQuit.hoverFade > 0 -> mc.shutdown()
-                btnMinecraftOptions.hoverFade > 0 -> mc.displayGuiScreen(GuiOptions(this, mc.gameSettings))
+                btnMinecraftOptions.hoverFade > 0 -> mc.displayGuiScreen(GuiInfo(this))
                 btnLanguage.hoverFade > 0 -> mc.displayGuiScreen(GuiLanguage(this, mc.gameSettings, mc.languageManager))
                 btnCommitInfo.hoverFade > 0 -> mc.displayGuiScreen(GuiCommitInfo())
-                btnForgeModList.hoverFade > 0 -> mc.displayGuiScreen(GuiModList(mc.currentScreen))
-                btnCosmetics.hoverFade > 0 -> mc.displayGuiScreen(GuiTheme())
-                btnAddAccount.hoverFade > 0 -> mc.displayGuiScreen(GuiAltManager(this))
-                btnConnectAPI.hoverFade > 0 -> {
-                    checkStatus()
-                    checkChangelogs()
-                    checkBugs()
-                    loadPictures()
-                    loadDonors()
-                }
             }
         }
     }
@@ -132,7 +106,11 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         when (button.id) {
             0 -> mc.displayGuiScreen(GuiSelectWorld(this))
             1 -> mc.displayGuiScreen(GuiMultiplayer(this))
-            2 -> mc.displayGuiScreen(GuiInfo(this))
+            2 -> mc.displayGuiScreen(GuiOptions(this, mc.gameSettings))
+            3 -> mc.displayGuiScreen(GuiTheme())
+            4 -> mc.displayGuiScreen(GuiScripts(this))
+            5 -> mc.displayGuiScreen(GuiServerStatus(this))
+            6 -> mc.displayGuiScreen(GuiAltManager(this))
         }
     }
 
@@ -141,10 +119,10 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
 
         GlStateManager.pushMatrix()
         drawShadowRect(
-            (width / 2 - 130).toFloat(),
-            (height / 2 - 90).toFloat(),
-            (width / 2 + 130).toFloat(),
-            (height / 2 + 90).toFloat(),
+            (width / 2 - 150).toFloat(),
+            (height / 2 - 80).toFloat(),
+            (width / 2 + 150).toFloat(),
+            (height / 2 + 115).toFloat(),
             15F,
             Color(44, 43, 43, 100).rgb.toFloat().toInt()
         )
@@ -154,88 +132,39 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         GlStateManager.enableBlend()
         GlStateManager.color(1.0f, 1.0f, 1.0f)
         mc.textureManager.bindTexture(logo)
-        drawModalRectWithCustomSizedTexture(width / 2 - 25, height / 2 - 68, 0f, 0f, 49, 49, 49f, 49f)
-
-        val apiMessage = if (canConnect) "§eOK" else "§cNo"
-        minecraftFont.drawStringWithShadow(
-            "API Connection: $apiMessage",
-            ((width - 10f - minecraftFont.getStringWidth("API Connection: $apiMessage")).toDouble().toFloat()),
-            32.0F,
-            Color(255, 255, 255, 140).rgb
-        )
+        drawModalRectWithCustomSizedTexture(width / 2 - 65, height / 2 - 120, 0f, 0f, 130, 130, 130f, 130f)
         minecraftFont.drawStringWithShadow(
             CLIENT_NAME,
-            ((width - 4f - minecraftFont.getStringWidth(CLIENT_NAME)).toDouble().toFloat()),
-            ((height - 23f).toDouble().toFloat()),
+            (width - 10f - minecraftFont.getStringWidth(CLIENT_NAME)),
+            (height - 30f),
             Color(255, 255, 255, 140).rgb
         )
-        val uiMessage =
-            if (canConnect && isLatest) " §e(Latest)" else if (!canConnect && isLatest) " §c(API Dead)" else " §c(Outdated)"
+        val uiMessage = if (canConnect && isLatest) " §e(Latest)" else if (!canConnect && isLatest) " §c(API Dead)" else " §c(Outdated)"
         minecraftFont.drawStringWithShadow(
             "Your currently build is $clientVersionText$uiMessage",
-            ((width - 4f - minecraftFont.getStringWidth("Your currently build is $clientVersionText$uiMessage")).toDouble().toFloat()),
-            ((height - 12f).toDouble().toFloat()),
+            (width - 10f - minecraftFont.getStringWidth("Your currently build is $clientVersionText$uiMessage")),
+            (height - 18f),
             Color(255, 255, 255, 140).rgb
         )
-        minecraftFont.drawStringWithShadow(
-            "Changelogs:",
-            3.0F,
-            32.0F,
-            Color(255, 255, 255, 150).rgb
-        )
-        var changeY = 48
-        val changeDetails: List<String> = changelogs.split("\n")
-        changeDetails.forEach { detail ->
-            val formattedDetail = when {
-                detail.startsWith("~ ") -> "§r " + detail.uppercase(Locale.getDefault())
-                detail.startsWith("+ ") -> "§7[§a+§7]  §r${detail.replace("+ ", "").trim()}"
-                detail.startsWith("- ") -> "§7[§c-§7]  §r${detail.replace("- ", "").trim()}"
-                detail.startsWith("* ") -> "§7[§e*§7]  §r${detail.replace("* ", "").trim()}"
-                else -> detail
-            }
-            minecraftFont.drawStringWithShadow(
-                formattedDetail,
-                4.0F,
-                changeY.toFloat().toDouble().toFloat(),
-                Color(255, 255, 255, 150).rgb
-            )
-            changeY += 8
-        }
-        minecraftFont.drawStringWithShadow(
-            "Known Bugs:",
-            ((width - 10f - minecraftFont.getStringWidth("Known Bugs:")).toDouble().toFloat()),
-            43.0F,
-            Color(255, 255, 255, 140).rgb
-        )
-        var bugsY = 55
-        val bugDetails: List<String> = bugs.split("\n")
-        bugDetails.forEach { detail ->
-            minecraftFont.drawStringWithShadow(
-                detail,
-                ((width - 12f - minecraftFont.getStringWidth(detail)).toDouble().toFloat()),
-                bugsY.toFloat().toDouble().toFloat(),
-                Color(255, 255, 255, 140).rgb
-            )
-            bugsY += 11
-        }
 
         GlStateManager.color(1f, 1f, 1f, 1f)
         Fonts.fontSmall.drawCenteredStringWithoutShadow(
-            "by SkidderMC with love ",
-            width.toFloat() / 2, height.toFloat() / 2 - 19, Color(255, 255, 255, 100).rgb
+            "Comunity BlockBypass YT",
+            width.toFloat() / 2, height.toFloat() / 2 - 20, Color(255, 255, 255, 100).rgb
         )
 
         listOf(btnSinglePlayer, btnMultiplayer, btnClientOptions).forEach {
             it.drawButton(mc, mouseX, mouseY)
         }
-        listOf(btnConnectAPI, btnCommitInfo, btnCosmetics, btnMinecraftOptions, btnLanguage, btnForgeModList, btnAddAccount, btnQuit).forEach {
+        listOf(btnCommitInfo, btnMinecraftOptions, btnLanguage, btnQuit).forEach {
             it.drawButton(mouseX, mouseY)
         }
 
         Fonts.font35.drawString(
-            ((CLIENT_NAME + "(" + GitUtils.gitBranch) + "/" + GitUtils.gitInfo.getProperty(
-                "git.commit.id.abbrev"
-            )) + ") | Minecraft 1.8.9", 7, (this.height - 11).toFloat().toInt(), Color(255, 255, 255, 100).rgb
+            ((CLIENT_NAME + "(" + GitUtils.gitBranch) + "/" + GitUtils.gitInfo.getProperty("git.commit.id.abbrev")) + ") | Minecraft 1.8.9",
+            10,
+            (this.height - 20).toFloat().toInt(),
+            Color(255, 255, 255, 100).rgb
         )
 
         drawBloom(mouseX - 5, mouseY - 5, 10, 10, 16, Color(guiColor))

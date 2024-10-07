@@ -1,7 +1,7 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.file
 
@@ -9,9 +9,9 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import net.ccbluex.liquidbounce.FDPClient
-import net.ccbluex.liquidbounce.FDPClient.background
-import net.ccbluex.liquidbounce.FDPClient.isStarting
+import net.ccbluex.liquidbounce.UmbraClient
+import net.ccbluex.liquidbounce.UmbraClient.background
+import net.ccbluex.liquidbounce.UmbraClient.isStarting
 import net.ccbluex.liquidbounce.file.configs.*
 import net.ccbluex.liquidbounce.utils.Background.Companion.createBackground
 import net.ccbluex.liquidbounce.utils.ClientUtils.LOGGER
@@ -25,7 +25,7 @@ object FileManager : MinecraftInstance() {
 
     private val sections = mutableListOf<ConfigSection>()
 
-    val dir = File(mc.mcDataDir, "FDPCLIENT")
+    val dir = File(mc.mcDataDir, "UmbraClient")
     val fontsDir = File(dir, "fonts")
     val settingsDir = File(dir, "settings")
     val themesDir = File(dir, "themes")
@@ -177,7 +177,7 @@ object FileManager : MinecraftInstance() {
      * @param save whether to save the current config before loading the new one
      */
     fun load(name: String, save: Boolean = true) {
-        FDPClient.isLoadingConfig = true
+        UmbraClient.isLoadingConfig = true
         if (save && nowConfig != name) {
             saveAllConfigs() // Save all current configs before loading the new one
         }
@@ -204,6 +204,6 @@ object FileManager : MinecraftInstance() {
         }
 
         LOGGER.info("Config $name.json loaded.")
-        FDPClient.isLoadingConfig = false
+        UmbraClient.isLoadingConfig = false
     }
 }

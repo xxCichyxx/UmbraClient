@@ -1,11 +1,11 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.handler.combat
 
-import net.ccbluex.liquidbounce.FDPClient
+import net.ccbluex.liquidbounce.UmbraClient
 import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.utils.EntityUtils
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
@@ -32,7 +32,7 @@ object CombatManager : MinecraftInstance(), Listenable {
         // bypass java.util.ConcurrentModificationException
         attackedEntityList.map { it }.forEach {
             if (it.isDead) {
-                FDPClient.eventManager.callEvent(EntityKilledEvent(it))
+                UmbraClient.eventManager.callEvent(EntityKilledEvent(it))
                 attackedEntityList.remove(it)
             }
         }

@@ -1,11 +1,11 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.ui.client.gui
 
-import net.ccbluex.liquidbounce.FDPClient
+import net.ccbluex.liquidbounce.UmbraClient
 import net.ccbluex.liquidbounce.features.module.modules.client.HUDModule.guiColor
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.GitUtils
@@ -44,13 +44,13 @@ class GuiCommitInfo : GuiScreen() {
 
         val lines = listOf(
             "Git Info",
-            "${FDPClient.CLIENT_NAME} built by ${GitUtils.gitInfo.getProperty("git.build.user.name")}",
+            "${UmbraClient.CLIENT_NAME} built by ${GitUtils.gitInfo.getProperty("git.build.user.name")}",
             "Version: ${GitUtils.gitInfo.getProperty("git.build.version")}",
             "CommitId: ${GitUtils.gitInfo.getProperty("git.commit.id")} (${GitUtils.gitInfo.getProperty("git.commit.id.abbrev")})",
             "CommitMessage: ${GitUtils.gitInfo.getProperty("git.commit.message.short")}",
             "Branch: ${GitUtils.gitInfo.getProperty("git.branch")}",
             "Remote origin: ${GitUtils.gitInfo.getProperty("git.remote.origin.url")}",
-            "Developers: ${FDPClient.CLIENT_AUTHOR}"
+            "Developers: ${UmbraClient.CLIENT_AUTHOR}"
         )
 
         lines.forEachIndexed { index, line ->
@@ -70,6 +70,6 @@ class GuiCommitInfo : GuiScreen() {
     }
 
     companion object {
-        val gitImage: ResourceLocation = ResourceLocation("fdpclient/mainmenu/github.png")
+        val gitImage: ResourceLocation = ResourceLocation("umbraclient/mainmenu/github.png")
     }
 }

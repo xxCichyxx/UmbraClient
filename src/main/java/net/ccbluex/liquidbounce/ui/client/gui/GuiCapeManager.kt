@@ -1,7 +1,7 @@
 /*
- * FDPClient Hacked Client
+ * UmbraClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/SkidderMC/FDPClient/
+ * https://github.com/xxCichyxx/UmbraClient
  */
 package net.ccbluex.liquidbounce.ui.client.gui
 
@@ -46,8 +46,8 @@ object GuiCapeManager : GuiScreen() {
 
     enum class CapeStyle(val location: ResourceLocation?) {
         NONE(APIConnecter.callImage("none", "cape")),
-        CLASSIC(ResourceLocation("fdpclient/cape/classic.png")),
-        CLASSIC2(ResourceLocation("fdpclient/cape/classic2.png")),
+        CLASSIC(ResourceLocation("umbraclient/cape/classic.png")),
+        CLASSIC2(ResourceLocation("umbraclient/cape/classic2.png")),
         AURORA(APIConnecter.callImage("aurora", "cape")),
         FOREST(APIConnecter.callImage("forest", "cape")),
         ROSE(APIConnecter.callImage("rose", "cape")),

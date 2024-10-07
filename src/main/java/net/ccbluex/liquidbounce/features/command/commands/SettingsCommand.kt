@@ -6,7 +6,7 @@
 package net.ccbluex.liquidbounce.features.command.commands
 
 import kotlinx.coroutines.*
-import net.ccbluex.liquidbounce.FDPClient
+import net.ccbluex.liquidbounce.UmbraClient
 import net.ccbluex.liquidbounce.handler.api.ClientApi
 import net.ccbluex.liquidbounce.handler.api.Status
 import net.ccbluex.liquidbounce.handler.api.autoSettingsList
@@ -160,7 +160,7 @@ object SettingsCommand : Command("autosettings", "autosetting", "settings", "set
 
                 val serverData = mc.currentServerData ?: error("You need to be on a server to upload settings.")
 
-                val name = "${FDPClient.clientCommit}-${serverData.serverIP.replace(".", "_")}"
+                val name = "${UmbraClient.clientCommit}-${serverData.serverIP.replace(".", "_")}"
                 val response = ClientApi.uploadSettings(name, mc.session.username, settingsScript)
 
                 when (response.status) {
@@ -197,7 +197,7 @@ object SettingsCommand : Command("autosettings", "autosetting", "settings", "set
                     }
 
                     // List additional config files
-                    val configFiles = FDPClient.fileManager.settingsDir.listFiles { _, name ->
+                    val configFiles = UmbraClient.fileManager.settingsDir.listFiles { _, name ->
                         name.endsWith(".txt")
                     }
 
@@ -261,7 +261,7 @@ object SettingsCommand : Command("autosettings", "autosetting", "settings", "set
                 return@withContext
             }
 
-            val file = File(FDPClient.fileManager.settingsDir, "$configName.txt")
+            val file = File(UmbraClient.fileManager.settingsDir, "$configName.txt")
 
             if (file.exists()) {
                 val success = file.delete()
@@ -279,7 +279,7 @@ object SettingsCommand : Command("autosettings", "autosetting", "settings", "set
     // Open folder subcommand
     private suspend fun openFolder() {
         withContext(Dispatchers.IO) {
-            Desktop.getDesktop().open(FDPClient.fileManager.settingsDir)
+            Desktop.getDesktop().open(UmbraClient.fileManager.settingsDir)
             chat("Opening folder...")
         }
     }
@@ -341,8 +341,8 @@ object SettingsCommand : Command("autosettings", "autosetting", "settings", "set
                 return@withContext
             }
 
-            val oldFile = File(FDPClient.fileManager.settingsDir, "$oldName.txt")
-            val newFile = File(FDPClient.fileManager.settingsDir, "$newName.txt")
+            val oldFile = File(UmbraClient.fileManager.settingsDir, "$oldName.txt")
+            val newFile = File(UmbraClient.fileManager.settingsDir, "$newName.txt")
 
             if (oldFile.exists()) {
                 if (!newFile.exists()) {
@@ -365,7 +365,7 @@ object SettingsCommand : Command("autosettings", "autosetting", "settings", "set
     // Current subcommand
     private suspend fun currentConfig() {
         withContext(Dispatchers.IO) {
-            alert("Current config is ${FDPClient.fileManager.nowConfig}")
+            alert("Current config is ${UmbraClient.fileManager.nowConfig}")
             chat("Displaying current config...")
         }
     }
@@ -380,8 +380,8 @@ object SettingsCommand : Command("autosettings", "autosetting", "settings", "set
 
             val oldName = args[2]
             val newName = args[3]
-            val oldFile = File(FDPClient.fileManager.settingsDir, "$oldName.txt")
-            val newFile = File(FDPClient.fileManager.settingsDir, "$newName.txt")
+            val oldFile = File(UmbraClient.fileManager.settingsDir, "$oldName.txt")
+            val newFile = File(UmbraClient.fileManager.settingsDir, "$newName.txt")
 
             if (oldFile.exists()) {
                 if (!newFile.exists()) {
@@ -411,7 +411,7 @@ object SettingsCommand : Command("autosettings", "autosetting", "settings", "set
                             loadSettings(true, 500) {}
                         }
 
-                        val configFiles = FDPClient.fileManager.settingsDir.listFiles { _, name ->
+                        val configFiles = UmbraClient.fileManager.settingsDir.listFiles { _, name ->
                             name.endsWith(".txt")
                         }?.map { it.nameWithoutExtension } ?: emptyList()
 

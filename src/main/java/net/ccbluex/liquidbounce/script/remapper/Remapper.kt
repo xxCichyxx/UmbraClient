@@ -5,7 +5,7 @@
  */
 package net.ccbluex.liquidbounce.script.remapper
 
-import net.ccbluex.liquidbounce.FDPClient.CLIENT_CLOUD
+import net.ccbluex.liquidbounce.UmbraClient.CLIENT_CLOUD
 import net.ccbluex.liquidbounce.file.FileManager.dir
 import net.ccbluex.liquidbounce.utils.ClientUtils.LOGGER
 import net.ccbluex.liquidbounce.utils.misc.HttpUtils.download
