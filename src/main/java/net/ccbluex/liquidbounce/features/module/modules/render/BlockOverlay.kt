@@ -32,6 +32,9 @@ import org.lwjgl.opengl.GL11.*
 import java.awt.Color
 
 object BlockOverlay : Module("BlockOverlay", Category.VISUAL, gameDetecting = false, hideModule = false) {
+    init {
+        state = true
+    }
     private val mode by ListValue("Mode", arrayOf("Box", "OtherBox", "Outline"), "Box")
     private val depth3D by BoolValue("Depth3D", false)
     private val thickness by FloatValue("Thickness", 2F, 1F..5F)
@@ -39,9 +42,9 @@ object BlockOverlay : Module("BlockOverlay", Category.VISUAL, gameDetecting = fa
     val info by BoolValue("Info", false)
 
     private val colorRainbow by BoolValue("Rainbow", false)
-    private val colorRed by IntegerValue("R", 68, 0..255) { !colorRainbow }
-    private val colorGreen by IntegerValue("G", 117, 0..255) { !colorRainbow }
-    private val colorBlue by IntegerValue("B", 255, 0..255) { !colorRainbow }
+    private val colorRed by IntegerValue("R", 90, 0..255) { !colorRainbow }
+    private val colorGreen by IntegerValue("G", 0, 0..255) { !colorRainbow }
+    private val colorBlue by IntegerValue("B", 200, 0..255) { !colorRainbow }
 
     val currentBlock: BlockPos?
         get() {

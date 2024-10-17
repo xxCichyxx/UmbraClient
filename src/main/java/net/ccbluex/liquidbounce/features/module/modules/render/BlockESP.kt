@@ -26,15 +26,18 @@ import net.minecraft.util.BlockPos
 import java.awt.Color
 
 object BlockESP : Module("BlockESP", Category.VISUAL, hideModule = false) {
+    init {
+        state = true
+    }
     private val mode by ListValue("Mode", arrayOf("Box", "2D"), "Box")
-    private val block by BlockValue("Block", 168)
+    private val block by BlockValue("Block", 26)
     private val radius by IntegerValue("Radius", 40, 5..120)
     private val blockLimit by IntegerValue("BlockLimit", 256, 0..2056)
 
     private val colorRainbow by BoolValue("Rainbow", false)
-        private val colorRed by IntegerValue("R", 255, 0..255) { !colorRainbow }
-        private val colorGreen by IntegerValue("G", 179, 0..255) { !colorRainbow }
-        private val colorBlue by IntegerValue("B", 72, 0..255) { !colorRainbow }
+        private val colorRed by IntegerValue("R", 90, 0..255) { !colorRainbow }
+        private val colorGreen by IntegerValue("G", 20, 0..255) { !colorRainbow }
+        private val colorBlue by IntegerValue("B", 230, 0..255) { !colorRainbow }
 
     private val searchTimer = MSTimer()
     private val posList = mutableListOf<BlockPos>()

@@ -5,12 +5,11 @@
  */
 package net.ccbluex.liquidbounce.features.module.modules.client
 
-import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.features.module.Module
-import net.ccbluex.liquidbounce.ui.client.gui.GuiCapeManager
+import net.ccbluex.liquidbounce.features.module.Category
 
-object CapeManager : Module("CapeManager", Category.CLIENT, canBeEnabled = false) {
-    override fun onEnable() {
-        mc.displayGuiScreen(GuiCapeManager)
+object NoAchievement : Module("NoAchievement", Category.CLIENT, gameDetecting = false, hideModule = false) {
+    init {
+        state = true
     }
 }

@@ -24,8 +24,8 @@ object NameProtect : Module("NameProtect", Category.VISUAL, subjective = true, g
 
     val allPlayers by BoolValue("AllPlayers", false)
 
-    val skinProtect by BoolValue("SkinProtect", true)
-    private val fakeName by TextValue("FakeName", "&cMe")
+    val skinProtect by BoolValue("SkinProtect", false)
+    private val fakeName by TextValue("FakeName", "&dUmbra Client")
 
     private val randomNames by BoolValue("RandomNames", false) { allPlayers }
     private val randomNameLength by BoolValue("RandomNameLength", false) { allPlayers && randomNames }

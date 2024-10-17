@@ -31,13 +31,16 @@ import java.awt.Color
 import kotlin.math.pow
 
 object Tracers : Module("Tracers", Category.VISUAL, hideModule = false) {
+    init {
+        state = true
+    }
 
     private val colorMode by ListValue("Color", arrayOf("Custom", "DistanceColor", "Rainbow"), "Custom")
-    private val colorRed by IntegerValue("R", 0, 0..255) { colorMode == "Custom" }
-    private val colorGreen by IntegerValue("G", 160, 0..255) { colorMode == "Custom" }
-    private val colorBlue by IntegerValue("B", 255, 0..255) { colorMode == "Custom" }
+    private val colorRed by IntegerValue("R", 90, 0..255) { colorMode == "Custom" }
+    private val colorGreen by IntegerValue("G", 10, 0..255) { colorMode == "Custom" }
+    private val colorBlue by IntegerValue("B", 200, 0..255) { colorMode == "Custom" }
 
-    private val thickness by FloatValue("Thickness", 2F, 1F..5F)
+    private val thickness by FloatValue("Thickness", 1F, 1F..5F)
 
     private val maxRenderDistance by object : IntegerValue("MaxRenderDistance", 100, 1..200) {
         override fun onUpdate(value: Int) {
@@ -50,7 +53,7 @@ object Tracers : Module("Tracers", Category.VISUAL, hideModule = false) {
             field = if (value <= 0.0) maxRenderDistance.toDouble().pow(2.0) else value
         }
 
-    private val bot by BoolValue("Bots", true)
+    private val bot by BoolValue("Bots", false)
     private val teams by BoolValue("Teams", false)
 
     private val onLook by BoolValue("OnLook", false)

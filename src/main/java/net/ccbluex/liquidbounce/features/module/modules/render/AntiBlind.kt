@@ -8,8 +8,14 @@ package net.ccbluex.liquidbounce.features.module.modules.visual
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.value.BoolValue
+import net.ccbluex.liquidbounce.value.FloatValue
 
-object TrueSight : Module("TrueSight", Category.VISUAL) {
-    val barriers by BoolValue("Barriers", true)
-    val entities by BoolValue("Entities", true)
+object AntiBlind : Module("AntiBlind", Category.VISUAL, gameDetecting = false, hideModule = false) {
+    init {
+        state = true
+    }
+    val confusionEffect by BoolValue("Confusion", true)
+    val pumpkinEffect by BoolValue("Pumpkin", true)
+    val fireEffect by FloatValue("FireAlpha", 0.1f, 0f..1f)
+    val bossHealth by BoolValue("BossHealth", true)
 }

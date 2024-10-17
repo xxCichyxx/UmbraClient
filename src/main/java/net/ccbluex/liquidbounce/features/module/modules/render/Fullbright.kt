@@ -15,6 +15,9 @@ import net.minecraft.potion.Potion
 import net.minecraft.potion.PotionEffect
 
 object Fullbright : Module("Fullbright", Category.VISUAL, gameDetecting = false, hideModule = false) {
+    init {
+        state = true
+    }
     private val mode by ListValue("Mode", arrayOf("Gamma", "NightVision"), "Gamma")
     private var prevGamma = -1f
 

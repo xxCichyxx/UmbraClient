@@ -1,7 +1,7 @@
 /*
- * UmbraClient Hacked Client
+ * FDPClient Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/xxCichyxx/UmbraClient
+ * https://github.com/SkidderMC/FDPClient/
  */
 package net.ccbluex.liquidbounce.features.module.modules.client
 
@@ -80,7 +80,7 @@ object IRCModule : Module("IRC", Category.CLIENT, subjective = true, gameDetecti
                     val thePlayer = mc.thePlayer
 
                     if (thePlayer == null) {
-                        LOGGER.info("[IRC] ${packet.user.name}: ${packet.content}")
+                        LOGGER.info("[LiquidChat] ${packet.user.name}: ${packet.content}")
                         return
                     }
 
@@ -119,7 +119,7 @@ object IRCModule : Module("IRC", Category.CLIENT, subjective = true, gameDetecti
                             displayChatMessage("§7[§a§lChat§7] §9Logged in!")
 
                             displayChatMessage("====================================")
-                            displayChatMessage("§c>> §lIRC")
+                            displayChatMessage("§c>> §lLiquidChat")
                             displayChatMessage("§7Write message: §a.chat <message>")
                             displayChatMessage("§7Write private message: §a.pchat <user> <message>")
                             displayChatMessage("====================================")
@@ -194,7 +194,7 @@ object IRCModule : Module("IRC", Category.CLIENT, subjective = true, gameDetecti
                     client.loginMojang()
                 }
             } catch (cause: Exception) {
-                LOGGER.error("IRC error", cause)
+                LOGGER.error("LiquidChat error", cause)
                 displayChatMessage("§7[§a§lChat§7] §cError: §7${cause.javaClass.name}: ${cause.message}")
             }
 
@@ -268,5 +268,4 @@ object IRCModule : Module("IRC", Category.CLIENT, subjective = true, gameDetecti
 
         return component
     }
-
 }

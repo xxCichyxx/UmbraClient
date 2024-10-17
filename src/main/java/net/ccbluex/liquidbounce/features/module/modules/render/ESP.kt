@@ -42,8 +42,12 @@ import kotlin.math.pow
 
 object ESP : Module("ESP", Category.VISUAL, hideModule = false) {
 
+    init {
+        state = true
+    }
+
     val mode by ListValue("Mode",
-        arrayOf("Box", "OtherBox", "WireFrame", "2D", "Real2D", "Outline", "Glow"), "Box")
+        arrayOf("Box", "OtherBox", "WireFrame", "2D", "Real2D", "Outline", "Glow"), "Outline")
 
         val outlineWidth by FloatValue("Outline-Width", 3f, 0.5f..5f) { mode == "Outline" }
 
@@ -55,9 +59,9 @@ object ESP : Module("ESP", Category.VISUAL, hideModule = false) {
         private val glowTargetAlpha by FloatValue("Glow-Target-Alpha", 0f, 0f..1f) { mode == "Glow" }
 
     private val colorRainbow by BoolValue("Rainbow", false)
-        private val colorRed by IntegerValue("R", 255, 0..255) { !colorRainbow }
-        private val colorGreen by IntegerValue("G", 255, 0..255) { !colorRainbow }
-        private val colorBlue by IntegerValue("B", 255, 0..255) { !colorRainbow }
+        private val colorRed by IntegerValue("R", 90, 0..255) { !colorRainbow }
+        private val colorGreen by IntegerValue("G", 0, 0..255) { !colorRainbow }
+        private val colorBlue by IntegerValue("B", 200, 0..255) { !colorRainbow }
 
     private val maxRenderDistance by object : IntegerValue("MaxRenderDistance", 100, 1..200) {
         override fun onUpdate(value: Int) {
@@ -76,7 +80,7 @@ object ESP : Module("ESP", Category.VISUAL, hideModule = false) {
         }
 
     private val colorTeam by BoolValue("Team", false)
-    private val bot by BoolValue("Bots", true)
+    private val bot by BoolValue("Bots", false)
 
     var renderNameTags = true
 

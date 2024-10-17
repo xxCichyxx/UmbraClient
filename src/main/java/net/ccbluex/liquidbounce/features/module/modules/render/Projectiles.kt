@@ -48,12 +48,15 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 object Projectiles : Module("Projectiles", Category.VISUAL, gameDetecting = false, hideModule = false) {
+    init {
+        state = true
+    }
     private val maxTrailSize by IntegerValue("MaxTrailSize", 20, 1..100)
 
     private val colorMode by ListValue("Color", arrayOf("Custom", "BowPower", "Rainbow"), "Custom")
-    private val colorRed by IntegerValue("R", 0, 0..255) { colorMode == "Custom" }
-    private val colorGreen by IntegerValue("G", 160, 0..255) { colorMode == "Custom" }
-    private val colorBlue by IntegerValue("B", 255, 0..255) { colorMode == "Custom" }
+    private val colorRed by IntegerValue("R", 90, 0..255) { colorMode == "Custom" }
+    private val colorGreen by IntegerValue("G", 10, 0..255) { colorMode == "Custom" }
+    private val colorBlue by IntegerValue("B", 200, 0..255) { colorMode == "Custom" }
 
     private val trailPositions = mutableMapOf<Entity, MutableList<Triple<Long, Vec3, Float>>>()
 

@@ -40,6 +40,7 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 
 object BedPlates : Module("BedPlates", Category.VISUAL, hideModule = false) {
+
     private val renderYOffset by IntegerValue("RenderYOffset", 1, 0..5)
 
     private val maxRenderDistance by object : IntegerValue("MaxRenderDistance", 100, 1..200) {
@@ -53,7 +54,7 @@ object BedPlates : Module("BedPlates", Category.VISUAL, hideModule = false) {
         }
 
     private val maxLayers by IntegerValue("MaxLayers", 5, 1..10)
-    private val scale by FloatValue("Scale", 3F, 1F..5F)
+    private val scale by FloatValue("Scale", 1F, 1F..5F)
 
     private val textMode by ListValue("Text-Color", arrayOf("Custom", "Rainbow", "Gradient", "Theme"), "Custom")
     private val textRed by IntegerValue("Text-R", 255, 0..255) { textMode == "Custom" }

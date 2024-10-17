@@ -41,10 +41,6 @@ import java.util.*
 
 object CombatVisuals : Module("CombatVisuals", Category.VISUAL, hideModule = false, subjective = true) {
 
-    init {
-        state = true
-    }
-
     // Mark - TargetESP
     private val markValue by ListValue("MarkMode", arrayOf("None", "Zavz", "Jello", "Lies", "FDP", "Sims", "Box", "RoundBox", "Head", "Mark"), "Zavz")
     private val isMarkMode: Boolean
