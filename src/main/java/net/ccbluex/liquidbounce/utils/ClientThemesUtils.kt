@@ -39,8 +39,14 @@ object ClientThemesUtils {
             "Coral",
             "Fire",
             "Aqua",
-            "Peony"),
-        "Soniga"
+            "Peony",
+            "Umbra",
+            "Umbra2",
+            "Christmas",
+            "AuroraFrost",
+            "SunnyWhite"
+        ),
+        "Umbra"
     ) { false }
 
     var textValue by BoolValue("TextStaticColor", false)
@@ -72,6 +78,11 @@ object ClientThemesUtils {
             "fire" -> if (type == "START") Color(255, 45, 30, alpha) else Color(255, 123, 15, alpha)
             "aqua" -> if (type == "START") Color(80, 255, 255, alpha) else Color(80, 190, 255, alpha)
             "peony" -> if (type == "START") Color(255, 120, 255, alpha) else Color(255, 190, 255, alpha)
+            "umbra" -> if (type == "START") Color(90, 0, 200, alpha) else Color(200, 200, 200, alpha)
+            "umbra2" -> if (type == "START") Color(90, 0, 200, alpha) else Color(40, 8, 200, alpha)
+            "christmas" -> if (type == "START") Color(255, 0, 0, alpha) else Color(255, 255, 255, alpha)
+            "aurorafrost" -> if (type == "START") Color(255, 125, 25, alpha) else Color(255, 255, 255, alpha)
+            "sunnywhite" -> if (type == "START") Color(255, 255, 25, alpha) else Color(255, 255, 255, alpha)
             "astolfo" -> if (type == "START") ColorUtils.skyRainbow(0, 0.6f, 1f, 20000F / ThemeFadeSpeed).setAlpha(alpha) else ColorUtils.skyRainbow(90, 0.6f, 1F,20000F / ThemeFadeSpeed).setAlpha(alpha)
             "rainbow" -> if (type == "START") ColorUtils.skyRainbow(0, 1f, 1f, 20000F / ThemeFadeSpeed).setAlpha(alpha) else ColorUtils.skyRainbow(90, 1f, 1F,20000F / ThemeFadeSpeed).setAlpha(alpha)
             else -> Color(-1)
@@ -99,9 +110,14 @@ object ClientThemesUtils {
             "sundae" to Pair(Color(28, 28, 27), Color(206, 74, 126)),
             "terminal" to Pair(Color(25, 30, 25), Color(15, 155, 15)),
             "coral" to Pair(Color(52, 133, 151), Color(244, 168, 150)),
-            "fire" to Pair(Color(255,45,30), Color(255,123,15)),
+            "fire" to Pair(Color(255,45,30), Color(255,255,15)),
             "aqua" to Pair(Color(80,255,255), Color(80,190,255)),
             "peony" to Pair(Color(255,120,255), Color(255,190,255)),
+            "umbra" to Pair(Color(90, 0, 200), Color(200, 200, 200)),
+            "umbra2" to Pair(Color(90, 50, 200), Color(40, 5, 200)),
+            "christmas" to Pair(Color(255, 0, 0), Color(255, 255, 255)),
+            "aurorafrost" to Pair(Color(255, 125, 25), Color(255, 255, 255)),
+            "sunnywhite" to Pair(Color(255, 255, 25), Color(255, 255, 255)),
             "astolfo" to Pair(ColorUtils.skyRainbow(0, 0.6F, 1F, 20000F / ThemeFadeSpeed), ColorUtils.skyRainbow(90, 0.6F, 1F, 20000F / ThemeFadeSpeed)),
             "rainbow" to Pair(ColorUtils.skyRainbow(0, 1F, 1F, 20000F / ThemeFadeSpeed), ColorUtils.skyRainbow(90, 1F, 1F, 20000F / ThemeFadeSpeed))
         )
@@ -117,6 +133,53 @@ object ClientThemesUtils {
         } else {
             Color(-1)
         }
+    }
+    fun getGradientColor(index: Int = 0): Pair<Color, Color> {
+        val mode = ClientColorMode.lowercase()
+
+        // Mapa kolorów z dwoma kolorami na potrzeby gradientu
+        val colorMap = mapOf(
+            "zywl" to Pair(Color(206, 58, 98), Color(215, 171, 168)),
+            "water" to Pair(Color(35, 69, 148), Color(108, 170, 207)),
+            "magic" to Pair(Color(255, 180, 255), Color(181, 139, 194)),
+            "tree" to Pair(Color(18, 155, 38), Color(76, 255, 102)),
+            "darknight" to Pair(Color(93, 95, 95), Color(203, 200, 204)),
+            "sun" to Pair(Color(255, 143, 0), Color(252, 205, 44)),
+            "flower" to Pair(Color(184, 85, 199), Color(182, 140, 195)),
+            "loyoi" to Pair(Color(255, 131, 0), Color(255, 131, 124)),
+            "soniga" to Pair(Color(255, 100, 255), Color(100, 255, 255)),
+            "may" to Pair(Color(255, 80, 255), Color(255, 255, 255)),
+            "mint" to Pair(Color(85, 255, 140), Color(85, 255, 255)),
+            "cero" to Pair(Color(170, 0, 170), Color(170, 255, 170)),
+            "azure" to Pair(Color(0, 90, 255), Color(0, 180, 255)),
+            "pumpkin" to Pair(Color(255, 216, 169), Color(241, 166, 98)),
+            "polarized" to Pair(Color(0, 32, 64), Color(173, 239, 209)),
+            "sundae" to Pair(Color(28, 28, 27), Color(206, 74, 126)),
+            "terminal" to Pair(Color(25, 30, 25), Color(15, 155, 15)),
+            "coral" to Pair(Color(52, 133, 151), Color(244, 168, 150)),
+            "fire" to Pair(Color(255,45,30), Color(255,123,15)),
+            "aqua" to Pair(Color(80,255,255), Color(80,190,255)),
+            "peony" to Pair(Color(255,120,255), Color(255,190,255)),
+            "umbra" to Pair(Color(90, 0, 200), Color(200, 200, 200)),
+            "umbra2" to Pair(Color(90, 50, 200), Color(40, 5, 200)),
+            "christmas" to Pair(Color(255, 0, 0), Color(255, 255, 255)),
+            "aurorafrost" to Pair(Color(255, 125, 25), Color(255, 255, 255)),
+            "sunnywhite" to Pair(Color(255, 255, 25), Color(255, 255, 255)),
+            "astolfo" to Pair(
+                ColorUtils.skyRainbow(0, 0.6F, 1F, 20000F / ThemeFadeSpeed),
+                ColorUtils.skyRainbow(90, 0.6F, 1F, 20000F / ThemeFadeSpeed)
+            ),
+            "rainbow" to Pair(
+                ColorUtils.skyRainbow(0, 1F, 1F, 20000F / ThemeFadeSpeed),
+                ColorUtils.skyRainbow(90, 1F, 1F, 20000F / ThemeFadeSpeed)
+            )
+        )
+
+        // Pobierz kolory dla danego trybu
+        val colorPair = colorMap[mode]
+
+        // Jeśli tryb jest znaleziony, zwróć dwa kolory, w przeciwnym razie zwróć domyślnie biały i czarny
+        return colorPair ?: Pair(Color.WHITE, Color.BLACK)
     }
 
     fun getColorFromName(name: String, index: Int): Color {
@@ -144,6 +207,11 @@ object ClientThemesUtils {
             "fire" to { fadeSpeed -> mixColors(Color(255,45,30), Color(255,123,15), fadeSpeed, index) },
             "aqua" to { fadeSpeed -> mixColors(Color(80,255,255), Color(80,190,255), fadeSpeed, index) },
             "peony" to { fadeSpeed -> mixColors(Color(255,120,255), Color(255,190,255), fadeSpeed, index) },
+            "umbra" to { fadeSpeed -> mixColors(Color(90, 0, 255), Color(200, 200, 200), fadeSpeed, index) },
+            "umbra2" to { fadeSpeed -> mixColors(Color(90, 50, 200), Color(40, 5, 200), fadeSpeed, index) },
+            "christmas" to { fadeSpeed -> mixColors(Color(255, 0, 0), Color(255, 255, 255), fadeSpeed, index) },
+            "aurorafrost" to { fadeSpeed -> mixColors(Color(255, 125, 25), Color(255, 255, 255), fadeSpeed, index) },
+            "sunnywhite" to { fadeSpeed -> mixColors(Color(255, 255, 25), Color(255, 255, 255), fadeSpeed, index) },
         )
 
         val fadeSpeed = ThemeFadeSpeed / 5.0 * if (updown) 1 else -1
@@ -176,6 +244,11 @@ object ClientThemesUtils {
             "fire" -> mixColors(Color(255,45,30), Color(255,123,15), fadeSpeed, index).setAlpha(alpha)
             "aqua" -> mixColors(Color(80,255,255), Color(80,190,255), fadeSpeed, index).setAlpha(alpha)
             "peony" -> mixColors(Color(255,120,255), Color(255,190,255), fadeSpeed, index).setAlpha(alpha)
+            "umbra" -> mixColors(Color(90, 0, 255), Color(200, 200, 200), fadeSpeed, index).setAlpha(alpha)
+            "umbra2" -> mixColors(Color(90, 50, 200), Color(40, 5, 200), fadeSpeed, index).setAlpha(alpha)
+            "christmas" -> mixColors(Color(255, 0, 0), Color(255, 255, 255), fadeSpeed, index).setAlpha(alpha)
+            "aurorafrost" -> mixColors(Color(255, 125, 0), Color(255, 255, 255), fadeSpeed, index).setAlpha(alpha)
+            "sunnywhite" -> mixColors(Color(255, 255, 0), Color(255, 255, 255), fadeSpeed, index).setAlpha(alpha)
             else -> Color(-1)
         }
     }

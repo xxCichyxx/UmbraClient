@@ -17,6 +17,8 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.Side
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.*
+import net.ccbluex.liquidbounce.utils.ClientThemesUtils.getColor
+import net.ccbluex.liquidbounce.utils.ClientThemesUtils.getGradientColor
 import net.ccbluex.liquidbounce.utils.MovementUtils.speed
 import net.ccbluex.liquidbounce.utils.extensions.getPing
 import net.ccbluex.liquidbounce.utils.inventory.InventoryUtils.serverSlot
@@ -33,6 +35,7 @@ import org.lwjgl.input.Keyboard
 import java.awt.Color
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
+import kotlin.random.Random
 
 /**
  * CustomHUD text element
@@ -40,7 +43,7 @@ import java.text.SimpleDateFormat
  * Allows to draw custom text
  */
 @ElementInfo(name = "Text")
-class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F, side: Side = Side.default()) : Element(x, y, scale, side) {
+class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F, side: Side = Side.default(), private val index: Int = 0) : Element(x, y, scale, side) {
 
     companion object {
 
@@ -52,22 +55,33 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F, side: Side = S
         /**
          * Create default element
          */
-        fun defaultClient(): Text {
-            val text = Text(x = 2.0, y = 2.0, scale = 2F)
+        fun defaultClient2(): Text {
+            val text = Text(x = 4.0, y = 4.0, scale = 1.60F)
 
-            text.displayString = "%clientName%"
+            text.displayString = "Umbra Client"
             text.shadow = true
-            text.color = Color(0, 111, 255)
+            text.textColorMode == "Theme"
+
+            return text
+        }
+
+        fun defaultBPS(): Text {
+            val text = Text(x = 4.0, y = 290.0, scale = 1.80F)
+
+            text.displayString = "BPS: %bps%"
+            text.shadow = true
+            text.textColorMode == "Theme"
 
             return text
         }
 
     }
 
+
     private var displayString by TextValue("DisplayText", "")
     private val roundedRectRadius by FloatValue("Rounded-Radius", 3F, 0F..5F)
 
-    private val textColorMode by ListValue("Text-Color", arrayOf("Custom", "Random", "Rainbow", "Gradient"), "Custom")
+    private val textColorMode by ListValue("Text-Color", arrayOf("Custom", "ADHD", "Rainbow", "Gradient", "Theme","Theme2"), "Theme2")
 
     private var alpha by IntegerValue("Alpha", 255, 0..255) { textColorMode != "Rainbow" }
     private var red by IntegerValue("Red", 255, 0..255) { textColorMode == "Custom" && alpha > 0 }
@@ -80,6 +94,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F, side: Side = S
     private val backgroundBlue by IntegerValue("BackgroundBlue", 0, 0..255) { backgroundAlpha > 0 }
 
     private val gradientTextSpeed by FloatValue("Text-Gradient-Speed", 1f, 0.5f..10f) { textColorMode == "Gradient" }
+    private val themeTextSpeed by FloatValue("Text-Theme-Speed", 1f, 0.5f..10f) { textColorMode == "Theme2" }
 
     // TODO: Make Color picker to fix this mess :/
     private val gradientTextRed1 by FloatValue("Text-Gradient-R1", 255f, 0f..255f) { textColorMode == "Gradient" }
@@ -102,6 +117,8 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F, side: Side = S
     private val rainbowY by FloatValue("Rainbow-Y", -1000F, -2000F..2000F) { textColorMode == "Rainbow" }
     private val gradientX by FloatValue("Gradient-X", -500F, -2000F..2000F) { textColorMode == "Gradient" }
     private val gradientY by FloatValue("Gradient-Y", -1500F, -2000F..2000F) { textColorMode == "Gradient" }
+    private val themeX by FloatValue("Theme-X", -500F, -2000F..2000F) { textColorMode == "Theme2" }
+    private val themeY by FloatValue("Theme-Y", -1500F, -2000F..2000F) { textColorMode == "Theme2" }
 
     private var shadow by BoolValue("Shadow", true)
     private val font by FontValue("Font", Fonts.font40)
@@ -210,7 +227,18 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F, side: Side = S
             result.append(str, lastPercent, str.length)
         }
 
+        if (textColorMode == "Theme") {
+            val themeTextColor = getColor(index).rgb
+        }
+
         return result.toString()
+    }
+
+    fun getRandomBrightColor(alpha: Int): Color {
+        val red = Random.nextInt(128, 256) // Upewnij się, że czerwień jest w zakresie od 128 do 255
+        val green = Random.nextInt(128, 256) // Upewnij się, że zieleń jest w zakresie od 128 do 255
+        val blue = Random.nextInt(128, 256) // Upewnij się, że niebieski jest w zakresie od 128 do 255
+        return Color(red, green, blue, alpha)
     }
 
     /**
@@ -219,15 +247,27 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F, side: Side = S
     override fun drawElement(): Border {
         val rainbow = textColorMode == "Rainbow"
         val gradient = textColorMode == "Gradient"
+        val random = textColorMode == "ADHD"
+        val theme = if (textColorMode == "Theme") getColor(index).rgb else color.rgb
+        val theme2 = textColorMode == "Theme2"
 
-        if (backgroundAlpha > 0) drawRoundedRect2(
-            -2F,
-            -2F,
-            font.getStringWidth(displayText) + 2F,
-            font.FONT_HEIGHT + 0F,
-            Color(backgroundRed, backgroundGreen, backgroundBlue, backgroundAlpha),
-            roundedRectRadius
-        )
+        val randomColor = getRandomBrightColor(255).rgb
+
+        val colorToUse = when {
+            random -> randomColor
+            else -> color.rgb
+        }
+
+        if (backgroundAlpha > 0) {
+            drawRoundedRect2(
+                -2F,
+                -2F,
+                font.getStringWidth(displayText) + 2F,
+                font.FONT_HEIGHT + 0F,
+                Color(backgroundRed, backgroundGreen, backgroundBlue, backgroundAlpha),
+                roundedRectRadius
+            )
+        }
 
         val gradientOffset = System.currentTimeMillis() % 10000 / 10000F
         val gradientX = if (gradientX == 0f) 0f else 1f / gradientX
@@ -284,9 +324,63 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F, side: Side = S
             }
         }
 
+        // Render Theme2 Gradient
+        if (textColorMode == "Theme2") {
+            val (color1, color2) = getGradientColor()
+            val themeOffset = System.currentTimeMillis() % 10000 / 10000F
+            val themeX = if (themeX == 0f) 0f else 1f / themeX
+            val themeY = if (themeY == 0f) 0f else 1f / themeY
+
+            GradientFontShader.begin(
+                true,
+                themeX,
+                themeY,
+                floatArrayOf(
+                    color1.red / 255.0f,
+                    color1.green / 255.0f,
+                    color1.blue / 255.0f,
+                    1.0f
+                ),
+                floatArrayOf(
+                    color2.red / 255.0f,
+                    color2.green / 255.0f,
+                    color2.blue / 255.0f,
+                    1.0f
+                ),
+                floatArrayOf(
+                    color1.red / 255.0f,
+                    color1.green / 255.0f,
+                    color1.blue / 255.0f,
+                    1.0f
+                ),
+                floatArrayOf(
+                    color2.red / 255.0f,
+                    color2.green / 255.0f,
+                    color2.blue / 255.0f,
+                    1.0f
+                ),
+                themeTextSpeed,
+                themeOffset
+            ).use {
+                font.drawString(displayText, 0F, 0F, color.rgb, shadow)
+
+                if (editMode && mc.currentScreen is GuiHudDesigner && editTicks <= 40) {
+                    font.drawString(
+                        "_", font.getStringWidth(displayText) + 2F,
+                        0F, color.rgb, shadow
+                    )
+                }
+            }
+        }
         if (editMode && mc.currentScreen !is GuiHudDesigner) {
             editMode = false
             updateElement()
+        }
+        if(textColorMode == "Theme") {
+            font.drawString(displayText, 0F, 0F, theme, shadow)
+        }
+        if(textColorMode == "ADHD") {
+            font.drawString(displayText, 0F, 0F, colorToUse, shadow)
         }
 
         return Border(-2F, -2F, font.getStringWidth(displayText) + 2F, font.FONT_HEIGHT.toFloat())

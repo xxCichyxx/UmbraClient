@@ -78,11 +78,12 @@ object KillAura : Module("KillAura", Category.COMBAT, Keyboard.KEY_R, hideModule
     private val simulateDoubleClicking by BoolValue("SimulateDoubleClicking", false) { !simulateCooldown }
 
     // CPS - Attack speed
+    private val cpsMode by ListValue("CPSMode", arrayOf("DragClick", "ButterFly", "Stabilized","Itter", "Legit"), "Legit")
     private val maxCPSValue = object : IntegerValue("MaxCPS", 8, 1..20) {
         override fun onChange(oldValue: Int, newValue: Int) = newValue.coerceAtLeast(minCPS)
 
         override fun onChanged(oldValue: Int, newValue: Int) {
-            attackDelay = randomClickDelay(minCPS, newValue)
+            attackDelay = calculateAttackDelay()
         }
 
         override fun isSupported() = !simulateCooldown
@@ -94,7 +95,7 @@ object KillAura : Module("KillAura", Category.COMBAT, Keyboard.KEY_R, hideModule
         override fun onChange(oldValue: Int, newValue: Int) = newValue.coerceAtMost(maxCPS)
 
         override fun onChanged(oldValue: Int, newValue: Int) {
-            attackDelay = randomClickDelay(newValue, maxCPS)
+            attackDelay = calculateAttackDelay()
         }
 
         override fun isSupported() = !maxCPSValue.isMinimal() && !simulateCooldown
@@ -357,6 +358,53 @@ object KillAura : Module("KillAura", Category.COMBAT, Keyboard.KEY_R, hideModule
     private var clicks = 0
     private var attackTickTimes = mutableListOf<Pair<MovingObjectPosition, Int>>()
 
+    // cps delays
+    private var currentCPS = minCPS
+
+    private fun calculateAttackDelay(): Int {
+        return when (cpsMode) {
+            "DragClick" -> {
+                randomClickDelay(2, maxCPS)
+            }
+            "ButterFly" -> {
+                randomClickDelay(minCPS, maxCPS)
+            }
+            "Stabilized" -> {
+                (1000 / ((minCPS + maxCPS) / 2))
+            }
+            "Itter" -> {
+                itterCPS()
+            }
+            "Legit" -> {
+                // Ustal, że "Legit" ma umiarkowane opóźnienie dla realistycznego klikania
+                (1200 / (maxCPS + 3)) // Przykład: maxCPS + 2 dla większego opóźnienia
+            }
+            else -> 1000 / minCPS // Domyślna wartość
+        }
+    }
+
+
+    private fun dragClickCPS(): Int {
+        return 1000 / maxCPS
+    }
+
+    private fun butterflyCPS(): Int {
+        return 1000 / minCPS
+    }
+
+    private fun stabilizedCPS(): Int {
+        return 1000 / ((minCPS + maxCPS) / 2)
+    }
+
+    private fun itterCPS(): Int {
+        currentCPS = if (currentCPS >= maxCPS) {
+            minCPS
+        } else {
+            currentCPS + 1
+        }
+        return 1000 / currentCPS
+    }
+
     // Container Delay
     private var containerOpen = -1L
 
@@ -378,6 +426,7 @@ object KillAura : Module("KillAura", Category.COMBAT, Keyboard.KEY_R, hideModule
      * Disable kill aura module
      */
     override fun onToggle(state: Boolean) {
+        currentCPS = minCPS
         target = null
         hittable = false
         prevTargetEntities.clear()

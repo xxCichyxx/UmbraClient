@@ -3,7 +3,7 @@
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
  * https://github.com/xxCichyxx/UmbraClient
  */
-package net.ccbluex.liquidbounce.features.module.modules.visual
+package net.ccbluex.liquidbounce.features.module.modules.render
 
 import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.PacketEvent
@@ -17,7 +17,7 @@ import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.network.play.server.S03PacketTimeUpdate
 import net.minecraft.network.play.server.S2BPacketChangeGameState
 
-object Ambience : Module("Ambience", Category.VISUAL, gameDetecting = false, hideModule = false) {
+object Ambience : Module("Ambience", Category.RENDER, gameDetecting = false, hideModule = false) {
 
     private val timeMode by ListValue("Mode", arrayOf("None", "Normal", "Custom", "Day", "Dusk", "Night", "Dynamic"), "Custom")
         private val customWorldTime by IntegerValue("Time", 6, 0..24) { timeMode == "Custom" }

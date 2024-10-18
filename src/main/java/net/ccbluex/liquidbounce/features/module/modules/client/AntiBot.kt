@@ -26,20 +26,20 @@ import net.minecraft.network.play.server.S20PacketEntityProperties
 
 object AntiBot : Module("AntiBot", Category.CLIENT, hideModule = false) {
 
-    private val tab by BoolValue("Tab", true)
+    private val tab by BoolValue("Tab", false)
     private val tabMode by ListValue("TabMode", arrayOf("Equals", "Contains"), "Contains") { tab }
 
-    private val entityID by BoolValue("EntityID", true)
-    private val invalidUUID by BoolValue("InvalidUUID", true)
+    private val entityID by BoolValue("EntityID", false)
+    private val invalidUUID by BoolValue("InvalidUUID", false)
     private val color by BoolValue("Color", false)
 
     private val livingTime by BoolValue("LivingTime", false)
     private val livingTimeTicks by IntegerValue("LivingTimeTicks", 40, 1..200) { livingTime }
 
-    private val capabilities by BoolValue("Capabilities", true)
-    private val ground by BoolValue("Ground", true)
-    private val air by BoolValue("Air", false)
-    private val invalidGround by BoolValue("InvalidGround", true)
+    private val capabilities by BoolValue("Capabilities", false)
+    private val ground by BoolValue("Ground", false)
+    private val air by BoolValue("Air", true)
+    private val invalidGround by BoolValue("InvalidGround", false)
     private val swing by BoolValue("Swing", false)
     private val health by BoolValue("Health", false)
     private val derp by BoolValue("Derp", true)
@@ -49,7 +49,7 @@ object AntiBot : Module("AntiBot", Category.CLIENT, hideModule = false) {
     private val needHit by BoolValue("NeedHit", false)
     private val duplicateInWorld by BoolValue("DuplicateInWorld", false)
     private val duplicateInTab by BoolValue("DuplicateInTab", false)
-    private val properties by BoolValue("Properties", false)
+    private val properties by BoolValue("Properties", true)
 
     private val alwaysInRadius by BoolValue("AlwaysInRadius", false)
     private val alwaysRadius by FloatValue("AlwaysInRadiusBlocks", 20f, 5f..30f) { alwaysInRadius }

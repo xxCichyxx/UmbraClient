@@ -9,9 +9,11 @@ enum class Category(val displayName: String, val configName: String, val htmlIco
     COMBAT("Combat", "Combat", "&#xe000;", 15, 15, false, true),
     PLAYER("Player", "Player", "&#xe7fd;", 15, 180, false, true),
     MOVEMENT("Movement", "Movement", "&#xe566;", 330, 15, false, true),
-    VISUAL("Visual", "Visual", "&#xe417;", 225, 15, false, true),
+    RENDER("Render", "Render", "&#xe417;", 225, 15, false, true),
     CLIENT("Client", "Client", "&#xe869;", 15, 330, false, true),
     OTHER("Other", "Other", "&#xe5d3;", 15, 330, false, true),
+    FUN("Fun", "Fun", "&#xe5d3;", 15, 330, false, true),
+    GHOST("Ghost", "Ghost", "&#xe5d3;", 15, 330, false, true),
     EXPLOIT("Exploit", "Exploit", "&#xe868;", 120, 180, false, true);
 
     /*

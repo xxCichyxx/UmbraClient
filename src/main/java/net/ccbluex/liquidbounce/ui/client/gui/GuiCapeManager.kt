@@ -27,7 +27,7 @@ object GuiCapeManager : GuiScreen() {
     val styleValue = ListValue(
         "Mode",
         arrayOf(
-            "classic", "classic2", "aurora", "forest", "rose", "lavender",
+            "none", "classic", "classic2", "aurora", "forest", "rose", "lavender",
             "ocean", "modern1", "modern2", "lava", "citrus", "fire", "blue", "abstract", "owner"
         ),
         "classic"
@@ -46,21 +46,6 @@ object GuiCapeManager : GuiScreen() {
 
     enum class CapeStyle(val location: ResourceLocation?) {
         NONE(APIConnecter.callImage("none", "cape")),
-        CLASSIC(ResourceLocation("umbraclient/cape/classic.png")),
-        CLASSIC2(ResourceLocation("umbraclient/cape/classic2.png")),
-        AURORA(APIConnecter.callImage("aurora", "cape")),
-        FOREST(APIConnecter.callImage("forest", "cape")),
-        ROSE(APIConnecter.callImage("rose", "cape")),
-        LAVENDER(APIConnecter.callImage("lavender", "cape")),
-        OCEAN(APIConnecter.callImage("ocean", "cape")),
-        MODERN1(APIConnecter.callImage("modern1", "cape")),
-        MODERN2(APIConnecter.callImage("modern2", "cape")),
-        LAVA(APIConnecter.callImage("lava", "cape")),
-        CITRUS(APIConnecter.callImage("citrus", "cape")),
-        FIRE(APIConnecter.callImage("fire", "cape")),
-        BLUE(APIConnecter.callImage("blue", "cape")),
-        ABSTRACT(APIConnecter.callImage("abstract", "cape")),
-        OWNER(APIConnecter.callImage("owner", "cape")),
     }
 
     override fun onGuiClosed() {

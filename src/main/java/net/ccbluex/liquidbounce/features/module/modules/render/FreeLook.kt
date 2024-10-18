@@ -3,7 +3,7 @@
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
  * https://github.com/xxCichyxx/UmbraClient
  */
-package net.ccbluex.liquidbounce.features.module.modules.visual
+package net.ccbluex.liquidbounce.features.module.modules.render
 
 import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.RotationSetEvent
@@ -14,7 +14,7 @@ import net.ccbluex.liquidbounce.utils.extensions.prevRotation
 import net.ccbluex.liquidbounce.utils.extensions.rotation
 import org.lwjgl.input.Keyboard
 
-object FreeLook : Module("FreeLook", Category.VISUAL, Keyboard.KEY_LMENU) {
+object FreeLook : Module("FreeLook", Category.RENDER, Keyboard.KEY_LMENU) {
 
     // The module's rotations
     private var currRotation = Rotation.ZERO

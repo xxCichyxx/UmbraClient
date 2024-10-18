@@ -3,7 +3,7 @@
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
  * https://github.com/xxCichyxx/UmbraClient
  */
-package net.ccbluex.liquidbounce.features.module.modules.combat
+package net.ccbluex.liquidbounce.features.module.modules.ghost
 
 import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.Render3DEvent
@@ -25,10 +25,9 @@ import net.ccbluex.liquidbounce.value.IntegerValue
 import net.minecraft.client.settings.KeyBinding
 import net.minecraft.entity.Entity
 import net.minecraft.item.EnumAction
-import net.minecraft.util.MovingObjectPosition
 import kotlin.random.Random.Default.nextBoolean
 
-object AutoClicker : Module("AutoClicker", Category.COMBAT, hideModule = false) {
+object AutoClicker : Module("AutoClicker", Category.GHOST, hideModule = false) {
 
     private val simulateDoubleClicking by BoolValue("SimulateDoubleClicking", false)
 

@@ -5,7 +5,7 @@
  */
 package net.ccbluex.liquidbounce.event
 
-import net.ccbluex.liquidbounce.features.module.modules.visual.FreeCam
+import net.ccbluex.liquidbounce.features.module.modules.render.FreeCam
 import net.ccbluex.liquidbounce.utils.extensions.withY
 import net.minecraft.block.Block
 import net.minecraft.client.gui.GuiScreen
@@ -77,12 +77,22 @@ class JumpEvent(var motion: Float, val eventState: EventState) : CancellableEven
  */
 class KeyEvent(val key: Int) : Event()
 
+class PostMotionEvent: Event()
+
 /**
  * Called in "onUpdateWalkingPlayer"
  *
  * @param eventState PRE or POST
  */
-class MotionEvent(val eventState: EventState) : Event()
+class MotionEvent(
+    var x: Double,
+    var y: Double,
+    var z: Double,
+    var yaw: Float,
+    var pitch: Float,
+    var onGround: Boolean,
+    val eventState: EventState = EventState.PRE
+) : Event()
 
 /**
  * Called in "onLivingUpdate" when the player is using a use item.

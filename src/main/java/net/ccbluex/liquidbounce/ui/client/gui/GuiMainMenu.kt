@@ -31,7 +31,6 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
     private lateinit var btnMultiplayer: GuiButton
     private lateinit var btnClientOptions: GuiButton
     private lateinit var btnThemes: GuiButton
-    private lateinit var btnScripts: GuiButton
     private lateinit var btnServerStatus: GuiButton
     private lateinit var btnAltManager: GuiButton
     private lateinit var btnCommitInfo: ImageButton
@@ -55,13 +54,13 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         val additionalButtonY = height / 2 + buttonHeight + buttonSpacing  // Ustalamy Y dla nowych przycisków
 
         // Nowe przyciski: "THEMES", "SCRIPTS", "SERVER STATUS", "ALT MANAGER"
+
         btnThemes = GuiButton(3, width / 2 - buttonWidth - buttonSpacing / 2, additionalButtonY, buttonWidth, buttonHeight, "THEMES")
-        btnScripts = GuiButton(4, width / 2 + buttonSpacing / 2, additionalButtonY, buttonWidth, buttonHeight, "SCRIPTS")
         btnServerStatus = GuiButton(5, width / 2 - buttonWidth - buttonSpacing / 2, additionalButtonY + buttonHeight + buttonSpacing, buttonWidth, buttonHeight, "SERVER STATUS")
-        btnAltManager = GuiButton(6, width / 2 + buttonSpacing / 2, additionalButtonY + buttonHeight + buttonSpacing, buttonWidth, buttonHeight, "ALT MANAGER")
+        btnAltManager = GuiButton(6, width / 2 + buttonSpacing / 2, additionalButtonY, buttonWidth, buttonHeight, "ALT MANAGER")
 
         // Przycisk "OPTIONS" pod innymi przyciskami
-        btnClientOptions = GuiButton(2, width / 2 - buttonWidth / 2, additionalButtonY + buttonHeight * 2 + buttonSpacing * 2, buttonWidth, buttonHeight, "MINECRAFT SETTINGS")
+        btnClientOptions = GuiButton(2, width / 2 + buttonSpacing / 2, additionalButtonY + buttonHeight + buttonSpacing, buttonWidth, buttonHeight, "MINECRAFT SETTINGS")
 
         btnCommitInfo = ImageButton(
             "COMMIT INFO",
@@ -84,7 +83,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         btnQuit = QuitButton(width - 25, 10)
 
         // Dodanie przycisków do listy
-        buttonList.addAll(listOf(btnSinglePlayer, btnMultiplayer, btnClientOptions, btnThemes, btnScripts, btnServerStatus, btnAltManager))
+        buttonList.addAll(listOf(btnSinglePlayer, btnMultiplayer, btnClientOptions, btnThemes, btnServerStatus, btnAltManager))
     }
 
     override fun mouseClicked(mouseX: Int, mouseY: Int, button: Int) {
@@ -108,7 +107,6 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
             1 -> mc.displayGuiScreen(GuiMultiplayer(this))
             2 -> mc.displayGuiScreen(GuiOptions(this, mc.gameSettings))
             3 -> mc.displayGuiScreen(GuiTheme())
-            4 -> mc.displayGuiScreen(GuiScripts(this))
             5 -> mc.displayGuiScreen(GuiServerStatus(this))
             6 -> mc.displayGuiScreen(GuiAltManager(this))
         }
@@ -122,7 +120,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
             (width / 2 - 150).toFloat(),
             (height / 2 - 80).toFloat(),
             (width / 2 + 150).toFloat(),
-            (height / 2 + 115).toFloat(),
+            (height / 2 + 95).toFloat(),
             15F,
             Color(44, 43, 43, 100).rgb.toFloat().toInt()
         )
@@ -139,10 +137,9 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
             (height - 30f),
             Color(255, 255, 255, 140).rgb
         )
-        val uiMessage = if (canConnect && isLatest) " §e(Latest)" else if (!canConnect && isLatest) " §c(API Dead)" else " §c(Outdated)"
         minecraftFont.drawStringWithShadow(
-            "Your currently build is $clientVersionText$uiMessage",
-            (width - 10f - minecraftFont.getStringWidth("Your currently build is $clientVersionText$uiMessage")),
+            "Twój Aktualny Build to $clientVersionText",
+            (width - 10f - minecraftFont.getStringWidth("Twój Aktualny Build to $clientVersionText")),
             (height - 18f),
             Color(255, 255, 255, 140).rgb
         )

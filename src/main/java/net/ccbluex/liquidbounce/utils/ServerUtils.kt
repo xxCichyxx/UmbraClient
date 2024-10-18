@@ -83,4 +83,28 @@ object ServerUtils : MinecraftInstance() {
 
         return hours.toString() + "h " + minutes + "m " + seconds + "s"
     }
+    fun isHypixelLobby(): Boolean {
+        if (mc.theWorld == null) return false
+
+        val target = "CLICK TO PLAY"
+        for (entity in mc.theWorld.loadedEntityList) {
+            if (entity.name.startsWith("§e§l")) {
+                if (entity.name == "§e§l$target") {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    fun isHypixelDomain(s1: String): Boolean {
+        var chars = 0
+        val str = "www.hypixel.net"
+
+        for (c in str.toCharArray()) {
+            if (s1.contains(c.toString())) chars++
+        }
+
+        return chars == str.length
+    }
 }

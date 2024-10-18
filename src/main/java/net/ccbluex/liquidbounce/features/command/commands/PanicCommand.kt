@@ -22,7 +22,7 @@ object PanicCommand : Command("panic") {
                 "all" -> msg = "all"
 
                 "nonrender" -> {
-                    modules = modules.filter { it.category != Category.VISUAL }
+                    modules = modules.filter { it.category != Category.RENDER }
                     msg = "all non-render"
                 }
 

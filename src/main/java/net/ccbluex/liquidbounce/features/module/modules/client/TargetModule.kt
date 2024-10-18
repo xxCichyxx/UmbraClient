@@ -13,8 +13,8 @@ object TargetModule : Module("Target", Category.CLIENT, defaultInArray = false, 
     var playerValue by BoolValue("Player", true)
     var animalValue by BoolValue("Animal", true)
     var mobValue by BoolValue("Mob", true)
-    var invisibleValue by BoolValue("Invisible", false)
-    var deadValue by BoolValue("Dead", false)
+    var invisibleValue by BoolValue("Invisible", true)
+    var deadValue by BoolValue("Dead", true)
 
     override fun handleEvents() = true
 }

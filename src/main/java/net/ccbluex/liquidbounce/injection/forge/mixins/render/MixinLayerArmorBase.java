@@ -5,9 +5,9 @@
  */
 package net.ccbluex.liquidbounce.injection.forge.mixins.render;
 
-import net.ccbluex.liquidbounce.features.module.modules.visual.CustomModel;
-import net.ccbluex.liquidbounce.features.module.modules.visual.FreeCam;
-import net.ccbluex.liquidbounce.features.module.modules.visual.Glint;
+import net.ccbluex.liquidbounce.features.module.modules.render.CustomModel;
+import net.ccbluex.liquidbounce.features.module.modules.render.FreeCam;
+import net.ccbluex.liquidbounce.features.module.modules.render.Glint;
 import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
 import net.minecraft.entity.EntityLivingBase;
 import org.spongepowered.asm.mixin.Mixin;

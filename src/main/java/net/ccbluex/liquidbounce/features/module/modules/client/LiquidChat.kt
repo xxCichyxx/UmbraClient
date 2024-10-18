@@ -26,10 +26,10 @@ import java.net.URISyntaxException
 import java.util.regex.Pattern
 import kotlin.concurrent.thread
 
-object IRCModule : Module("IRC", Category.CLIENT, subjective = true, gameDetecting = false) {
+object LiquidChat : Module("IRC", Category.CLIENT, subjective = true, gameDetecting = false) {
 
     init {
-        state = true
+        state = false
         inArray = false
     }
 

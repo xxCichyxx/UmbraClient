@@ -5,12 +5,18 @@
  */
 package net.ccbluex.liquidbounce.features.module.modules.client
 
+import net.ccbluex.liquidbounce.UmbraClient
 import net.ccbluex.liquidbounce.event.EventState
 import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.MotionEvent
 import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.features.module.Module
-import net.ccbluex.liquidbounce.features.module.modules.visual.FreeCam
+import net.ccbluex.liquidbounce.features.module.modules.combat.BowAimbot
+import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura
+import net.ccbluex.liquidbounce.features.module.modules.exploit.Disabler
+import net.ccbluex.liquidbounce.features.module.modules.`fun`.Derp
+import net.ccbluex.liquidbounce.features.module.modules.movement.Sprint
+import net.ccbluex.liquidbounce.features.module.modules.render.FreeCam
 import net.ccbluex.liquidbounce.utils.Rotation
 import net.ccbluex.liquidbounce.utils.RotationUtils.currentRotation
 import net.ccbluex.liquidbounce.utils.RotationUtils.serverRotation
@@ -20,18 +26,22 @@ import net.ccbluex.liquidbounce.value.IntegerValue
 
 object Rotations : Module("Rotations", Category.CLIENT, gameDetecting = false, hideModule = false) {
 
+    init {
+        state = true
+    }
+
     private val realistic by BoolValue("Realistic", true)
     private val body by BoolValue("Body", true) { !realistic }
 
     private val smoothRotations by BoolValue("SmoothRotations", false)
     private val smoothingFactor by FloatValue("SmoothFactor", 0.15f, 0.1f..0.9f) { smoothRotations }
 
-    val ghost by BoolValue("Ghost", true)
+    val ghost by BoolValue("Ghost", false)
 
-    val colorRedValue by IntegerValue("R", 0, 0..255) { ghost }
-    val colorGreenValue by IntegerValue("G", 160, 0..255) { ghost }
-    val colorBlueValue by IntegerValue("B", 255, 0..255) { ghost }
-    val alphaValue by IntegerValue("Alpha", 255, 0..255) { ghost }
+    val colorRedValue by IntegerValue("R", 90, 0..255) { ghost }
+    val colorGreenValue by IntegerValue("G", 0, 0..255) { ghost }
+    val colorBlueValue by IntegerValue("B", 200, 0..255) { ghost }
+    val alphaValue by IntegerValue("Alpha", 200, 0..255) { ghost }
     val rainbow by BoolValue("RainBow", false) { ghost }
 
     val debugRotations by BoolValue("DebugRotations", false)
@@ -70,7 +80,9 @@ object Rotations : Module("Rotations", Category.CLIENT, gameDetecting = false, h
     /**
      * Rotate when current rotation is not null.
      */
-    fun shouldRotate() = state && (specialCases || currentRotation != null)
+    fun shouldRotate(): Boolean {
+        return state && (specialCases || Derp.handleEvents() || currentRotation != null)
+    }
 
     /**
      * Smooth out rotations between two points
@@ -94,7 +106,7 @@ object Rotations : Module("Rotations", Category.CLIENT, gameDetecting = false, h
      * Which rotation should the module use?
      */
     fun getRotation(): Rotation? {
-        val currRotation = if (specialCases) serverRotation else currentRotation
+        val currRotation = if (specialCases || Derp.handleEvents()) serverRotation else currentRotation
 
         return if (smoothRotations && currRotation != null) {
             smoothRotation(lastRotation ?: return currRotation, currRotation)

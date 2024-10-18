@@ -3,13 +3,14 @@
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
  * https://github.com/xxCichyxx/UmbraClient
  */
-package net.ccbluex.liquidbounce.features.module.modules.combat
+package net.ccbluex.liquidbounce.features.module.modules.ghost
 
 import net.ccbluex.liquidbounce.event.EventState
 import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.MotionEvent
 import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.features.module.Module
+import net.ccbluex.liquidbounce.features.module.modules.combat.Backtrack
 import net.ccbluex.liquidbounce.features.module.modules.player.Reach
 import net.ccbluex.liquidbounce.utils.EntityUtils.isSelected
 import net.ccbluex.liquidbounce.utils.RotationUtils
@@ -30,7 +31,7 @@ import net.minecraft.entity.Entity
 import java.util.*
 import kotlin.math.atan
 
-object Aimbot : Module("Aimbot", Category.COMBAT, hideModule = false) {
+object Aimbot : Module("Aimbot", Category.GHOST, hideModule = false) {
 
     private val horizontalAim by BoolValue("HorizontalAim", true)
     private val verticalAim by BoolValue("VerticalAim", true)

@@ -46,7 +46,7 @@ class GuiTheme : GuiScreen() {
         }
 
         // Clamp scroll value to avoid over-scrolling
-        scroll = scroll.coerceIn(-200F, 0F)
+        scroll = scroll.coerceIn(-300F, 0F)
 
         // Smooth scroll animation, animates the scroll value to the target smoothly
         animScroll = animScroll.animSmooth(scroll, 0.5F)
@@ -107,16 +107,17 @@ class GuiTheme : GuiScreen() {
             "Tree", "Flower", "Loyoi", "Cero", "Soniga",
             "May", "Mint", "Azure", "Rainbow", "Astolfo",
             "Pumpkin", "Polarized", "Sundae", "Terminal", "Coral",
-            "Fire", "Aqua", "Peony"
+            "Fire", "Aqua", "Peony","Umbra","Umbra2", "Christmas",
+            "AuroraFrost", "SunnyWhite"
         )
 
-        // Positions for rendering modes and their text labels
         val modePositions = listOf(
             Pair(22f, 68F), Pair(147f, 68F), Pair(272f, 68F), Pair(397f, 68F), Pair(522f, 68F),
             Pair(22f, 163.0f), Pair(147f, 163.0f), Pair(272f, 163.0f), Pair(397f, 163.0f), Pair(522f, 163.0f),
             Pair(22f, 258.0f), Pair(147f, 258.0f), Pair(272f, 258.0f), Pair(397f, 258.0f), Pair(522f, 258.0f),
             Pair(22f, 353f), Pair(147f, 353f), Pair(272f, 353f), Pair(397f, 353f), Pair(522f, 353f),
-            Pair(22f, 448f), Pair(147f, 448f), Pair(272F, 448F)
+            Pair(22f, 448f), Pair(147f, 448f), Pair(272F, 448F), Pair(397f, 448f), Pair(522f, 448f),
+            Pair(22f, 543f), Pair(147f, 543f), Pair(272f, 543f)
         )
 
         val textPositions = listOf(
@@ -124,7 +125,8 @@ class GuiTheme : GuiScreen() {
             Pair(60.0, 240.0), Pair(184.0, 240.0), Pair(310.0, 240.0), Pair(434.0, 240.0), Pair(560.0, 240.0),
             Pair(60.0, 335.0), Pair(187.0, 335.0), Pair(310.0, 335.0), Pair(428.0, 335.0), Pair(560.0, 335.0),
             Pair(53.0, 430.0), Pair(180.0, 430.0), Pair(305.0, 430.0), Pair(428.0, 430.0), Pair(563.0, 430.0),
-            Pair(58.0, 525.0), Pair(185.0, 525.0), Pair(305.0, 525.0)
+            Pair(58.0, 525.0), Pair(185.0, 525.0), Pair(305.0, 525.0), Pair(428.0, 525.0), Pair(563.0, 525.0),
+            Pair(60.0, 625.0), Pair(180.0, 625.0), Pair(328.0, 625.0)
         )
 
         // Render all modes with the associated gradients and labels
@@ -230,7 +232,7 @@ class GuiTheme : GuiScreen() {
                 ClientColorMode = "Coral"
             }
         }
-        //Line 5 (Fire, Aqua, Peony)
+        //Line 5 (Fire, Aqua, Peony, "Umbra","Umbra2")
         if (animScroll < -115F) {
             if (mouseWithinBounds(mouseX, mouseY, 25F, 450F + animScroll, 122F, 520F + animScroll)) {
                 ClientColorMode = "Fire"
@@ -241,8 +243,25 @@ class GuiTheme : GuiScreen() {
             if (mouseWithinBounds(mouseX, mouseY, 275F, 450F + animScroll, 372F, 520F + animScroll)) {
                 ClientColorMode = "Peony"
             }
+            if (mouseWithinBounds(mouseX, mouseY, 400F, 450F + animScroll, 497F, 520F + animScroll)) {
+                ClientColorMode = "Umbra"
+            }
+            if (mouseWithinBounds(mouseX, mouseY, 525F, 450F + animScroll, 622F, 520F + animScroll)) {
+                ClientColorMode = "Umbra2"
+            }
         }
-
+        // Line 6 ("Christmas")
+        if (animScroll < -150F) {
+            if (mouseWithinBounds(mouseX, mouseY, 25F, 545F + animScroll, 122F, 615F + animScroll)) {
+                ClientColorMode = "Christmas"
+            }
+            if (mouseWithinBounds(mouseX, mouseY, 150F, 545F + animScroll, 247F, 615F + animScroll)) {
+                ClientColorMode = "AuroraFrost" // Handle click for AuroraFrost
+            }
+            if (mouseWithinBounds(mouseX, mouseY, 275F, 545F + animScroll, 372F, 615F + animScroll)) {
+                ClientColorMode = "SunnyWhite" // Handle click for SunnyWhite
+            }
+        }
         // Handle text-related click interactions
         if (mouseWithinBounds(mouseX, mouseY, 25F, 350.0f, 40F, 365.0f)) {
             textValue = !textValue

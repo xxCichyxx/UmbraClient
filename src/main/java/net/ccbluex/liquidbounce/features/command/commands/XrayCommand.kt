@@ -6,7 +6,7 @@
 package net.ccbluex.liquidbounce.features.command.commands
 
 import net.ccbluex.liquidbounce.features.command.Command
-import net.ccbluex.liquidbounce.features.module.modules.visual.XRay
+import net.ccbluex.liquidbounce.features.module.modules.render.XRay
 import net.minecraft.block.Block
 
 object XrayCommand : Command("xray") {

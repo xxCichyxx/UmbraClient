@@ -3,14 +3,14 @@
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
  * https://github.com/xxCichyxx/UmbraClient
  */
-package net.ccbluex.liquidbounce.features.module.modules.visual
+package net.ccbluex.liquidbounce.features.module.modules.render
 
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.FloatValue
 
-object ItemPhysics: Module("ItemPhysics", Category.VISUAL, hideModule = false) {
+object ItemPhysics: Module("ItemPhysics", Category.RENDER, hideModule = false) {
 
     val realistic by BoolValue("Realistic", false)
     val weight by FloatValue("Weight", 0.5F, 0.1F..3F)

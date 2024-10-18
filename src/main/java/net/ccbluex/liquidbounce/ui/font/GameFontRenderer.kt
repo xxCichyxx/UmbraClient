@@ -5,7 +5,7 @@
  */
 package net.ccbluex.liquidbounce.ui.font
 
-import net.ccbluex.liquidbounce.features.module.modules.visual.NameProtect
+import net.ccbluex.liquidbounce.features.module.modules.render.NameProtect
 import net.ccbluex.liquidbounce.utils.MinecraftInstance.Companion.mc
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils.drawLine

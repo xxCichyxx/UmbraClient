@@ -9,6 +9,7 @@ import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.utils.*
+import net.ccbluex.liquidbounce.utils.MovementUtils.isMovingForward
 import net.ccbluex.liquidbounce.utils.PacketUtils.sendPacket
 import net.ccbluex.liquidbounce.utils.RotationUtils.getVectorForRotation
 import net.ccbluex.liquidbounce.utils.RotationUtils.rotationDifference
@@ -49,7 +50,7 @@ import java.awt.Color
 import javax.vecmath.Color3f
 import kotlin.math.*
 
-object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule = false) {
+object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_X, hideModule = false) {
 
     /**
      * TOWER MODES & SETTINGS
@@ -138,7 +139,16 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
     private val autoF5 by BoolValue("AutoF5", false, subjective = true)
 
     // Basic stuff
+    private val autojump0 by BoolValue("AutoJump", false)
+    private val automaticjumps by IntegerValue("JumpTicks", 1, 1..450) { autojump0 }
     val sprint by BoolValue("Sprint", false)
+    val sprintMode by ListValue("SprintMode", arrayOf("Off","Vanilla","Packet","Motion","MotionPacket","onGround","OneTick"), "Off") { sprint }
+    val motionx1 by FloatValue("motionX1", 0.94f, 0.70f..1.25f) { sprintMode == "Motion" }
+    val motionz1 by FloatValue("motionZ1", 0.94f, 0.70f..1.25f) { sprintMode == "Motion" }
+    val motionx2 by FloatValue("motionX2", 0.99f, 0.70f..1.25f) { sprintMode == "Motion" }
+    val motionz2 by FloatValue("motionZ2", 0.99f, 0.70f..1.25f) { sprintMode == "Motion" }
+    val motion2x1 by FloatValue("motionX", 0.92f, 0.70f..1.25f) { sprintMode == "MotionPacket" }
+    val motion2z1 by FloatValue("motionZ", 0.92f, 0.70f..1.25f) { sprintMode == "MotionPacket" }
     private val swing by BoolValue("Swing", true, subjective = true)
     private val down by BoolValue("Down", true) { scaffoldMode !in arrayOf("GodBridge", "Telly") }
 
@@ -207,6 +217,15 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
         override fun onChange(oldValue: Int, newValue: Int) = newValue.coerceIn(minimum, maximum)
     }
 
+    // Sneak
+    private val sneakValue =
+        ListValue("Sneak", arrayOf("TicksFixed", "Off"), "Off")
+    val sneak by sneakValue
+    private val SneakJump by BoolValue("SneakOnlyJump", false) { sneakValue.isSupported() && sneak != "Off" }
+    private val blocksToSneakForward by IntegerValue("TicksToSneak", 1, 1..500) { sneakValue.isSupported() && sneak != "Off" }
+    private val SneakDistanseForward by IntegerValue("SneakDistanse", 1, 1..200) { sneakValue.isSupported() && sneak != "Off" }
+    private val SneakSpeed by FloatValue("SneakSpeed", 0.3f, 0.15f..1.0f) { sneakValue.isSupported() && sneak != "Off" }
+
     // Eagle
     private val eagleValue =
         ListValue("Eagle", arrayOf("Normal", "Silent", "Off"), "Normal") { scaffoldMode != "GodBridge" }
@@ -222,7 +241,7 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
     ) { eagleValue.isSupported() && eagle != "Off" }
 
     // Rotation Options
-    val rotationMode by ListValue("Rotations", arrayOf("Off", "Normal", "Stabilized", "GodBridge"), "Normal")
+    val rotationMode by ListValue("Rotations", arrayOf("Off", "Normal", "Stabilized", "GodBridge","Test","Backward"), "Normal")
     val smootherMode by ListValue(
         "SmootherMode",
         arrayOf("Linear", "Relative"),
@@ -238,7 +257,9 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
     }
 
     // Search options
-    val searchMode by ListValue("SearchMode", arrayOf("Area", "Center"), "Area") { scaffoldMode != "GodBridge" }
+    val pitchMode by ListValue("PitchMode", arrayOf("Static", "Vanilla", "Legit", "Custom", "StaticYaw", "Offset"), "Static")
+    val yawMode by ListValue("YawMode", arrayOf("StaticYaw", "Offset", "Default"), "Default")
+    val searchMode by ListValue("SearchMode", arrayOf("Area", "Center","FullBlock"), "Area") { scaffoldMode != "GodBridge" }
     private val minDist by FloatValue("MinDist", 0f, 0f..0.2f) { scaffoldMode !in arrayOf("GodBridge", "Telly") }
 
     // Turn Speed
@@ -297,11 +318,20 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
     // Game
     val timer by FloatValue("Timer", 1f, 0.1f..10f)
     private val speedModifier by FloatValue("SpeedModifier", 1f, 0f..2f)
+    private val motionModifier by BoolValue("MotionModifier", false)
+    private val multiplierGroundForward by FloatValue("MultiplierGroundForward", 5f, 4f..10f) { motionModifier }
+    private val multiplierAirForward by FloatValue("MultiplierAirForward", 5f, 4f..10f) { motionModifier }
+    private val multiplierGroundStrafe by FloatValue("MultiplierGroundStrafe", 5f, 4f..10f) { motionModifier }
+    private val multiplierAirStrafe by FloatValue("MultiplierAirStrafe", 5f, 4f..10f) { motionModifier }
+    private val motionMultiplierAirMax by FloatValue("MotionMultiplierAirMax", 1.01f, 0.9f..1.1f) { motionModifier }
+    private val motionMultiplierAirMin by FloatValue("MotionMultiplierAirMin", 1f, 0.9f..1.1f) { motionModifier }
+    private val motionMultiplierGroundMax by FloatValue("MotionMultiplierGroundMax", 1.13f, 0.9f..1.3f) { motionModifier }
+    private val motionMultiplierGroundMin by FloatValue("MotionMultiplierGroundMin", 1.1f, 0.9f..1.3f) { motionModifier }
     private val speedLimiter by BoolValue("SpeedLimiter", false) { !slow }
-    private val speedLimit by FloatValue("SpeedLimit", 0.11f, 0.01f..0.12f) { !slow && speedLimiter }
+    private val speedLimit by FloatValue("SpeedLimit", 0.27f, 0.01f..0.3f) { !slow && speedLimiter }
     private val slow by BoolValue("Slow", false)
     private val slowGround by BoolValue("SlowOnlyGround", false) { slow }
-    private val slowSpeed by FloatValue("SlowSpeed", 0.6f, 0.2f..0.8f) { slow }
+    private val slowSpeed by FloatValue("SlowSpeed", 0.98f, 0.2f..1.4f) { slow }
 
     // Jump Strafe
     private val jumpStrafe by BoolValue("JumpStrafe", false)
@@ -327,6 +357,7 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
 
     // Safety
     private val sameY by BoolValue("SameY", false) { scaffoldMode != "GodBridge" }
+    private val sameYMode = ListValue("SameYMode", arrayOf("off", "SameY"), "off") { sameY && scaffoldMode != "GodBridge" }
     private val freezeCameraY by BoolValue("FreezeCameraY", false)
     private val jumpOnUserInput by BoolValue("JumpOnUserInput", true) { sameY && scaffoldMode != "GodBridge" }
 
@@ -341,6 +372,8 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
     // Target placement
     var placeRotation: PlaceRotation? = null
 
+    var hasPlacedBlockThisFall = false
+
     // Launch position
     private var launchY = -999
 
@@ -348,7 +381,10 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
         get() = !jumpOnUserInput || !mc.gameSettings.keyBindJump.isKeyDown && mc.thePlayer.posY >= launchY && !mc.thePlayer.onGround
 
     private val shouldKeepLaunchPosition
-        get() = sameY && shouldJumpOnInput && scaffoldMode != "GodBridge"
+        get() = when (sameYMode.value) {
+            "SameY" -> shouldJumpOnInput && scaffoldMode != "GodBridge"
+            else -> false
+        }
 
     // Zitter
     private var zitterDirection = false
@@ -359,6 +395,11 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
     }
 
     private val zitterTickTimer = TickDelayTimer(minZitterTicksValue, maxZitterTicksValue)
+
+    //Sneak
+    private var ticksCouter0 = 0
+    private val isSneakEnabled
+        get() = sneak != "Off"
 
     // Eagle
     private var placedBlocksWithoutEagle = 0
@@ -454,6 +495,31 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
             if (!slowGround || slowGround && mc.thePlayer.onGround) {
                 player.motionX *= slowSpeed
                 player.motionZ *= slowSpeed
+            }
+        }
+
+        if (autojump0 && mc.thePlayer.ticksExisted % automaticjumps == 0) {
+            if (mc.thePlayer.onGround) {
+                mc.thePlayer.jump()
+            }
+        }
+
+        if (isSneakEnabled){
+            ticksCouter0++;
+            if(!SneakJump){
+                if(MovementUtils.isMovingForward) {
+                    if (ticksCouter0 % blocksToSneakForward == 0) {
+                        mc.gameSettings.keyBindSneak.pressed = true
+                    } else if (ticksCouter0 % SneakDistanseForward == 0) {
+                        mc.gameSettings.keyBindSneak.pressed = false
+                    }
+                }
+            } else {
+                if(!mc.thePlayer.onGround){
+                    mc.gameSettings.keyBindSneak.pressed = true
+                } else if (ticksCouter0 % SneakDistanseForward == 0){
+                    mc.gameSettings.keyBindSneak.pressed = false
+                }
             }
         }
 
@@ -600,13 +666,46 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
     }
 
     @EventTarget
-    fun onSneakSlowDown(event: SneakSlowDownEvent) {
-        if (!isEagleEnabled || eagle != "Normal") {
-            return
-        }
+    fun onMotion(event: MotionEvent) {
+        if (motionModifier) {
+            // Determine if player is in the air or on the ground
+            val isAir = !mc.thePlayer.onGround
 
-        event.forward *= eagleSpeed / 0.3f
-        event.strafe *= eagleSpeed / 0.3f
+            // Select multipliers based on the player's state
+            val forwardMultiplier = if (isAir) {
+                multiplierAirForward.coerceIn(motionMultiplierAirMin, motionMultiplierAirMax) // Air forward multiplier
+            } else {
+                multiplierGroundForward.coerceIn(
+                    motionMultiplierGroundMin,
+                    motionMultiplierGroundMax
+                ) // Ground forward multiplier
+            }
+
+            val strafeMultiplier = if (isAir) {
+                multiplierAirStrafe.coerceIn(motionMultiplierAirMin, motionMultiplierAirMax) // Air strafe multiplier
+            } else {
+                multiplierGroundStrafe.coerceIn(
+                    motionMultiplierGroundMin,
+                    motionMultiplierGroundMax
+                ) // Ground strafe multiplier
+            }
+
+            // Apply the modified motion
+            mc.thePlayer.motionX *= strafeMultiplier // Strafe
+            mc.thePlayer.motionZ *= forwardMultiplier // Forward
+        }
+    }
+
+    @EventTarget
+    fun onSneakSlowDown(event: SneakSlowDownEvent) {
+        if (isEagleEnabled && eagle == "Normal") {
+            event.forward *= eagleSpeed / 0.3f
+            event.strafe *= eagleSpeed / 0.3f
+        }
+        if (sneak == "TicksFixed") {
+            event.forward *= SneakSpeed / 0.3f
+            event.strafe *= SneakSpeed / 0.3f
+        }
     }
 
     @EventTarget
@@ -848,6 +947,7 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
     // Disabling module
     override fun onDisable() {
         val player = mc.thePlayer ?: return
+        ticksCouter0 = 0
 
         if (!GameSettings.isKeyDown(mc.gameSettings.keyBindSneak)) {
             mc.gameSettings.keyBindSneak.pressed = false
@@ -968,6 +1068,14 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
     ): Boolean {
         val player = mc.thePlayer ?: return false
 
+        // Ustawienie rotacji na podstawie pitchMode
+        val rotation = when (pitchMode) {
+            "Static" -> Rotation(player.rotationYaw, 90.0f) // Zawsze patrz w dół
+            "Custom" -> Rotation(player.rotationYaw, 45.0f) // Customowy kąt pochylenia głowy
+            else -> player.rotation // Domyślny yaw/pitch
+        }
+
+        // Sprawdzanie, czy blok może zostać zastąpiony
         if (!isReplaceable(blockPosition)) {
             if (autoF5) mc.gameSettings.thirdPersonView = 0
             return false
@@ -976,19 +1084,33 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
         }
 
         val maxReach = mc.playerController.blockReachDistance
-
         val eyes = player.eyes
         var placeRotation: PlaceRotation? = null
-
         var currPlaceRotation: PlaceRotation?
 
+        // Pętla iterująca po stronach sąsiednich bloków
         for (side in EnumFacing.values().filter { !horizontalOnly || it.axis != EnumFacing.Axis.Y }) {
             val neighbor = blockPosition.offset(side)
 
+            // Sprawdzenie, czy sąsiedni blok można kliknąć
             if (!canBeClicked(neighbor)) {
                 continue
             }
 
+            // Tryb FullBlock - przeszukiwanie wielu miejsc na całym bloku
+            if (searchMode == "FullBlock") {
+                for (x in 0.0..1.0 step 0.5) {
+                    for (y in 0.0..1.0 step 0.5) {
+                        for (z in 0.0..1.0 step 0.5) {
+                            currPlaceRotation = findTargetPlace(blockPosition, neighbor, Vec3(x, y, z), side, eyes, maxReach, raycast)
+                                ?: continue
+                            placeRotation = compareDifferences(currPlaceRotation, placeRotation)
+                        }
+                    }
+                }
+            }
+
+            // Tryb area lub gdy GodBridge jest włączony
             if (!area || isGodBridgeEnabled) {
                 currPlaceRotation =
                     findTargetPlace(blockPosition, neighbor, Vec3(0.5, 0.5, 0.5), side, eyes, maxReach, raycast)
@@ -996,9 +1118,10 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
 
                 placeRotation = compareDifferences(currPlaceRotation, placeRotation)
             } else {
-                for (x in 0.1..0.9) {
-                    for (y in 0.1..0.9) {
-                        for (z in 0.1..0.9) {
+                // Tryb przeszukiwania w obszarze (różne pozycje w bloku)
+                for (x in 0.1..0.9 step 0.2) {
+                    for (y in 0.1..0.9 step 0.2) {
+                        for (z in 0.1..0.9 step 0.2) {
                             currPlaceRotation =
                                 findTargetPlace(blockPosition, neighbor, Vec3(x, y, z), side, eyes, maxReach, raycast)
                                     ?: continue
@@ -1010,12 +1133,15 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
             }
         }
 
+        // Jeżeli nie znaleziono odpowiedniej rotacji do postawienia bloku, zwróć false
         placeRotation ?: return false
 
+        // Ustawianie rotacji głowy, jeśli tryb rotacji jest aktywny
         if (rotationMode != "Off" && !isGodBridgeEnabled) {
             setRotation(placeRotation.rotation, if (scaffoldMode == "Telly") 1 else keepTicks)
         }
 
+        // Ustawienie rotacji bloku do postawienia
         this.placeRotation = placeRotation
         return true
     }
@@ -1048,7 +1174,9 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
         val world = mc.theWorld ?: return null
 
         val vec = (Vec3(pos) + vec3).addVector(
-            side.directionVec.x * vec3.xCoord, side.directionVec.y * vec3.yCoord, side.directionVec.z * vec3.zCoord
+            side.directionVec.x * vec3.xCoord,
+            side.directionVec.y * vec3.yCoord,
+            side.directionVec.z * vec3.zCoord
         )
 
         val distance = eyes.distanceTo(vec)
@@ -1067,10 +1195,50 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_V, hideModule
             }
         }
 
-        var rotation = toRotation(vec, false)
+        val player = mc.thePlayer
 
+        val smoothSpeed = 0.5f
+
+        var rotation = toRotation(vec, true).fixedSensitivity()
+
+        rotation = when (pitchMode) {
+            "Static" -> Rotation(rotation.yaw, 90.0f) // Static - zawsze 90 stopni (np. patrzenie prosto w dół)
+            "Vanilla" -> rotation // Vanilla - domyślne obliczanie pitch
+            "Legit" -> Rotation(rotation.yaw, rotation.pitch.coerceAtMost(80.0f)) // Legit - ograniczenie pitch, np. max 80 stopni
+            "Custom" -> {
+                // Custom - przykład na dostosowanie kąta ręcznie
+                val customPitch = 45.0f // Tu możesz wprowadzić własną wartość lub dodać ją do UI
+                Rotation(rotation.yaw, customPitch)
+            }
+            "StaticYaw" -> Rotation(180.0f, rotation.pitch) // StaticYaw - statyczny obrót yaw, np. zawsze patrzy w jednym kierunku
+            "Offset" -> Rotation(rotation.yaw + 15.0f, rotation.pitch) // Offset - rotacja z offsetem
+            else -> rotation // Domyślne zachowanie
+        }.fixedSensitivity()
+        rotation = when (yawMode) {
+            "StaticYaw" -> Rotation(90.0f, rotation.pitch) // StaticYaw - zawsze patrzy np. na wschód (yaw 90 stopni)
+            "Offset" -> Rotation(player.rotationYaw + 15.0f, rotation.pitch) // Offset - dodawanie przesunięcia np. o 15 stopni
+            else -> rotation // Domyślne obliczanie yaw
+        }.fixedSensitivity()
         rotation = when (rotationMode) {
             "Stabilized" -> Rotation(round(rotation.yaw / 45f) * 45f, rotation.pitch)
+            "Test" -> {
+                if (player != null) {
+                    val targetYaw = player.rotationYaw + 180f
+                    val newPitch = rotation.pitch
+                    Rotation(targetYaw, newPitch).fixedSensitivity()
+                } else {
+                    rotation
+                }
+            }
+            "Backward" -> {
+                if (player != null) {
+                    val calcyaw = ((MovementUtils.movingYaw - 180) / 45).roundToInt() * 45
+                    var calcpitch = rotation.pitch
+                    Rotation(calcyaw.toFloat(), calcpitch).fixedSensitivity()
+                } else {
+                    rotation
+                }
+            }
             else -> rotation
         }.fixedSensitivity()
 

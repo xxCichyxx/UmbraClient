@@ -6,7 +6,7 @@
 package net.ccbluex.liquidbounce.injection.forge.mixins.entity;
 
 import net.ccbluex.liquidbounce.event.RotationSetEvent;
-import net.ccbluex.liquidbounce.features.module.modules.visual.FreeCam;
+import net.ccbluex.liquidbounce.features.module.modules.render.FreeCam;
 import net.ccbluex.liquidbounce.injection.implementations.IMixinEntity;
 import net.ccbluex.liquidbounce.event.EventManager;
 import net.ccbluex.liquidbounce.event.StrafeEvent;

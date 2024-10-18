@@ -20,6 +20,11 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 object MovementUtils : MinecraftInstance(), Listenable {
+    fun resetMotion(y: Boolean) {
+        mc.thePlayer.motionX = 0.0
+        mc.thePlayer.motionZ = 0.0
+        if(y) mc.thePlayer.motionY = 0.0
+    }
 
     var speed
         get() = mc.thePlayer?.run { sqrt(motionX * motionX + motionZ * motionZ).toFloat() } ?: .0f
@@ -29,6 +34,9 @@ object MovementUtils : MinecraftInstance(), Listenable {
 
     val isMoving
         get() = mc.thePlayer?.movementInput?.run { moveForward != 0f || moveStrafe != 0f } ?: false
+
+    val isMovingForward
+        get() = mc.thePlayer?.movementInput?.run { moveForward != 0f } ?: false
 
     val hasMotion
         get() = mc.thePlayer?.run { motionX != .0 || motionY != .0 || motionZ != .0 } ?: false
@@ -142,6 +150,9 @@ object MovementUtils : MinecraftInstance(), Listenable {
     }
 
     var serverOnGround = false
+
+    val movingYaw: Float
+        get() = (direction * 180f / Math.PI).toFloat()
 
     var serverX = .0
     var serverY = .0

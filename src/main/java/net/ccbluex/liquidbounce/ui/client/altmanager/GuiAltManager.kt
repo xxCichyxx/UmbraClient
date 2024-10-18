@@ -91,35 +91,41 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
         drawBackground(0)
         altsList.drawScreen(mouseX, mouseY, partialTicks)
-        this.drawCenteredString(mc.fontRendererObj, "Alt Manager", width / 2, 6, 0xffffff)
-        this.drawCenteredString(mc.fontRendererObj, "§7Status: §a$status", width / 2, 25, 0xffffff)
-        this.drawString(
-            mc.fontRendererObj,
-            if (searchField.text.isEmpty()) "${accountsConfig.accounts.size} Alts" else altsList.accounts.size.toString() + " Search Results",
-            width / 2,
-            18,
-            0xffffff
-        )
-        this.drawString(
-            mc.fontRendererObj, "§7Ign: §a${mc.getSession().username}",
-            6,
-            6,
-            0xffffff
-        )
-        this.drawString(
-            mc.fontRendererObj, "§7Type: §a${
-                if (isValidTokenOffline(
-                        mc.getSession().token
-                    )
-                ) "Microsoft" else "Cracked"
-            }", 6, 15, 0xffffff
-        )
-        searchField.drawTextBox()
-        if (searchField.text.isEmpty() && !searchField.isFocused)
-            this.drawString(
-                mc.fontRendererObj,  "§7Search...", searchField.xPosition + 4, 17, 0xffffff
-            )
 
+        // Rysowanie "Alt Manager" na środku ekranu
+        val altManagerText = "Alt Manager"
+        val altsText = "${accountsConfig.accounts.size} Alts"
+
+        // Szerokość obu tekstów
+        val altManagerTextWidth = mc.fontRendererObj.getStringWidth(altManagerText)
+        val altsTextWidth = mc.fontRendererObj.getStringWidth(altsText)
+
+        // Całkowita szerokość tekstów + odstęp między nimi (np. 10 pikseli)
+        val totalTextWidth = altManagerTextWidth + altsTextWidth + 10
+
+        // Wyśrodkowanie całości na ekranie
+        val centerX = (width - totalTextWidth) / 2
+
+        // Rysowanie "Alt Manager"
+        this.drawString(mc.fontRendererObj, altManagerText, centerX, 6, 0xffffff)
+
+        // Rysowanie liczby altów obok "Alt Manager", z odstępem 10 pikseli
+        this.drawString(mc.fontRendererObj, altsText, centerX + altManagerTextWidth + 10, 6, 0xffffff)
+
+        // Rysowanie statusu poniżej
+        this.drawCenteredString(mc.fontRendererObj, "§7Status: §a$status", width / 2, 25, 0xffffff)
+
+        // Ign i Type
+        this.drawString(mc.fontRendererObj, "§7Ign: §a${mc.getSession().username}", 6, 6, 0xffffff)
+        this.drawString(mc.fontRendererObj, "§7Type: §a${if (isValidTokenOffline(mc.getSession().token)) "Microsoft" else "Cracked"}", 6, 15, 0xffffff)
+
+        // Rysowanie pola wyszukiwania
+        searchField.drawTextBox()
+        if (searchField.text.isEmpty() && !searchField.isFocused) {
+            this.drawString(mc.fontRendererObj, "§7Search...", searchField.xPosition + 4, 17, 0xffffff)
+        }
+
+        // Rysowanie bloom efektu
         drawBloom(mouseX - 5, mouseY - 5, 10, 10, 16, Color(guiColor))
 
         super.drawScreen(mouseX, mouseY, partialTicks)
@@ -388,12 +394,41 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
                 minecraftAccount.name
             }
 
-            Fonts.minecraftFont.drawStringWithShadow(accountName, width / 2f - 40, y + 2f, Color.WHITE.rgb)
-            Fonts.minecraftFont.drawStringWithShadow(
-                if (minecraftAccount is CrackedAccount) "Cracked" else if (minecraftAccount is MicrosoftAccount) "Microsoft" else if (minecraftAccount is MojangAccount) "Mojang" else "Something else",
-                width / 2f,
-                y + 15f,
-                if (minecraftAccount is CrackedAccount) Color.GRAY.rgb else Color(118, 255, 95).rgb
+            // Określanie typu konta (Microsoft, Mojang, Cracked)
+            val accountType = when (minecraftAccount) {
+                is CrackedAccount -> "Cracked"
+                is MicrosoftAccount -> "Microsoft"
+                is MojangAccount -> "Mojang"
+                else -> "Unknown"
+            }
+
+            // Pobieramy szerokość tekstów (nazwa konta + typ konta)
+            val accountNameWidth = Fonts.font40.getStringWidth(accountName)
+            val accountTypeWidth = Fonts.font40.getStringWidth("($accountType)")
+
+            // Obliczanie całkowitej szerokości (nazwa konta + odstęp + typ konta)
+            val totalTextWidth = accountNameWidth + 5 + accountTypeWidth
+
+            // Wyśrodkowanie całego tekstu na ekranie
+            val centerX = (width - totalTextWidth) / 2
+
+            // Rysowanie niku konta
+            Fonts.font40.drawString(accountName, centerX.toFloat(), y + 2f, Color.WHITE.rgb, true)
+
+            // Ustawiamy kolor dla typu konta (zielony dla Premium, szary dla Cracked)
+            val accountTypeColor = if (minecraftAccount is CrackedAccount) {
+                Color.GRAY.rgb
+            } else {
+                Color(118, 255, 95).rgb // Zazielony kolor dla Mojang i Microsoft
+            }
+
+            // Rysowanie typu konta obok nazwy użytkownika, z małym odstępem
+            Fonts.font40.drawString(
+                "($accountType)",
+                (centerX + accountNameWidth + 5).toFloat(), // Dodajemy odstęp 5 pikseli po nazwie
+                y + 2f,
+                accountTypeColor,
+                true
             )
         }
 

@@ -28,8 +28,9 @@ import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.FloatValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.value.ListValue
+import org.lwjgl.input.Keyboard
 
-object Speed : Module("Speed", Category.MOVEMENT, hideModule = false) {
+object Speed : Module("Speed", Category.MOVEMENT, Keyboard.KEY_V, hideModule = false) {
 
     private val speedModes = arrayOf(
 
@@ -61,7 +62,6 @@ object Speed : Module("Speed", Category.MOVEMENT, hideModule = false) {
         VerusFHop,
         VerusLowHop,
         VerusLowHopNew,
-        VerusSpeeds,
 
         // Vulcan
         VulcanHop,
@@ -72,7 +72,6 @@ object Speed : Module("Speed", Category.MOVEMENT, hideModule = false) {
         OldMatrixHop,
         MatrixHop,
         MatrixSlowHop,
-        MatrixSpeeds,
 
         // Intave
         IntaveHop14,
@@ -90,7 +89,8 @@ object Speed : Module("Speed", Category.MOVEMENT, hideModule = false) {
         OnGround,
         SlowHop,
         Legit,
-        CustomSpeed
+        CustomSpeed,
+        GlitchHop
     )
 
     /**

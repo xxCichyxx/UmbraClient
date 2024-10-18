@@ -7,14 +7,14 @@ package net.ccbluex.liquidbounce.utils.render
 
 import com.jhlabs.image.GaussianFilter
 import net.ccbluex.liquidbounce.event.Render3DEvent
-import net.ccbluex.liquidbounce.features.module.modules.visual.CombatVisuals.DOUBLE_PI
-import net.ccbluex.liquidbounce.features.module.modules.visual.CombatVisuals.colorBlueTwoValue
-import net.ccbluex.liquidbounce.features.module.modules.visual.CombatVisuals.colorBlueValue
-import net.ccbluex.liquidbounce.features.module.modules.visual.CombatVisuals.colorGreenTwoValue
-import net.ccbluex.liquidbounce.features.module.modules.visual.CombatVisuals.colorGreenValue
-import net.ccbluex.liquidbounce.features.module.modules.visual.CombatVisuals.colorRedTwoValue
-import net.ccbluex.liquidbounce.features.module.modules.visual.CombatVisuals.colorRedValue
-import net.ccbluex.liquidbounce.features.module.modules.visual.CombatVisuals.start
+import net.ccbluex.liquidbounce.features.module.modules.render.CombatVisuals.DOUBLE_PI
+import net.ccbluex.liquidbounce.features.module.modules.render.CombatVisuals.colorBlueTwoValue
+import net.ccbluex.liquidbounce.features.module.modules.render.CombatVisuals.colorBlueValue
+import net.ccbluex.liquidbounce.features.module.modules.render.CombatVisuals.colorGreenTwoValue
+import net.ccbluex.liquidbounce.features.module.modules.render.CombatVisuals.colorGreenValue
+import net.ccbluex.liquidbounce.features.module.modules.render.CombatVisuals.colorRedTwoValue
+import net.ccbluex.liquidbounce.features.module.modules.render.CombatVisuals.colorRedValue
+import net.ccbluex.liquidbounce.features.module.modules.render.CombatVisuals.start
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.ClientThemesUtils.getColor
 import net.ccbluex.liquidbounce.utils.MinecraftInstance

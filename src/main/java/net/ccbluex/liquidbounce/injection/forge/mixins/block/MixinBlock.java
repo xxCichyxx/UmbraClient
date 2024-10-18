@@ -11,7 +11,7 @@ import net.ccbluex.liquidbounce.features.module.modules.combat.Criticals;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.GhostHand;
 import net.ccbluex.liquidbounce.features.module.modules.player.DelayRemover;
 import net.ccbluex.liquidbounce.features.module.modules.player.NoFall;
-import net.ccbluex.liquidbounce.features.module.modules.visual.XRay;
+import net.ccbluex.liquidbounce.features.module.modules.render.XRay;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockState;

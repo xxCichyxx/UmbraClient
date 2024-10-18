@@ -1,13 +1,13 @@
 /*
- * UmbraClient Hacked Client
- * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
- * https://github.com/xxCichyxx/UmbraClient
+ * LiquidBounce Hacked Client
+ * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
+ * https://github.com/CCBlueX/LiquidBounce/
  */
 package net.ccbluex.liquidbounce.features.module.modules.combat
 
 import net.ccbluex.liquidbounce.event.*
-import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.Category
+import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.modules.player.Blink
 import net.ccbluex.liquidbounce.injection.implementations.IMixinEntity
 import net.ccbluex.liquidbounce.utils.EntityUtils.isSelected
@@ -233,7 +233,6 @@ object Backtrack : Module("Backtrack", Category.COMBAT, hideModule = false) {
                                     }
                                 }
                             }
-
                             return
                         }
 
@@ -245,21 +244,29 @@ object Backtrack : Module("Backtrack", Category.COMBAT, hideModule = false) {
                 // Cancel every received packet to avoid possible server synchronization issues from random causes.
                 if (event.eventType == EventState.RECEIVE) {
                     when (packet) {
-                        is S14PacketEntity ->
-                            if (packet.entityId == target?.entityId)
+                        is S14PacketEntity -> {
+                            // Rzutowanie pakietu do odpowiedniego typu
+                            val entityId = (packet as? S14PacketEntity)?.entityId
+                            if (entityId == target?.entityId) {
                                 (target as? IMixinEntity)?.run {
                                     synchronized(positions) {
                                         positions += Pair(Vec3(trueX, trueY, trueZ), System.currentTimeMillis())
                                     }
                                 }
+                            }
+                        }
 
-                        is S18PacketEntityTeleport ->
-                            if (packet.entityId == target?.entityId)
+                        is S18PacketEntityTeleport -> {
+                            // Rzutowanie pakietu do odpowiedniego typu
+                            val entityId = (packet as? S18PacketEntityTeleport)?.entityId
+                            if (entityId == target?.entityId) {
                                 (target as? IMixinEntity)?.run {
                                     synchronized(positions) {
                                         positions += Pair(Vec3(trueX, trueY, trueZ), System.currentTimeMillis())
                                     }
                                 }
+                            }
+                        }
                     }
 
                     event.cancelEvent()
@@ -319,17 +326,34 @@ object Backtrack : Module("Backtrack", Category.COMBAT, hideModule = false) {
 
     @EventTarget
     fun onAttack(event: AttackEvent) {
-        if (!isSelected(event.targetEntity, true))
-            return
+        // Sprawdzenie, czy cel jest wybrany
+        if (!isSelected(event.targetEntity, true)) return
 
-        // Clear all packets, start again on enemy change
-        if (target != event.targetEntity) {
+        // Bezpieczne rzutowanie na event.targetEntity
+        val targetEntity = event.targetEntity as? EntityLivingBase ?: return
+
+        // Sprawdzenie, czy cel różni się od aktualnego celu
+        if (target != targetEntity) {
             clearPackets()
             reset()
+            target = targetEntity // Ustaw nowy cel, jeśli jest inny
+            return // Wychodzimy, aby uniknąć dalszego przetwarzania
         }
 
-        if (event.targetEntity is EntityLivingBase) {
-            target = event.targetEntity
+        // Użycie let do bezpiecznego dostępu do target
+        target?.let { currentTarget ->
+            // Oblicz odległość
+            val distance = currentTarget.getDistanceToEntity(targetEntity)
+
+            // Sprawdź, czy odległość jest poza dozwolonym zakresem
+            if (distance < minDistance || distance > maxDistance) {
+                clearPackets()
+                reset()
+                target = null // Zresetuj cel
+            }
+        } ?: run {
+            // Ustaw target, jeśli to EntityLivingBase
+            target = targetEntity
         }
     }
 
@@ -385,15 +409,13 @@ object Backtrack : Module("Backtrack", Category.COMBAT, hideModule = false) {
                     val targetEntity = target as IMixinEntity
 
                     if (targetEntity.truePos) {
-                        val x =
-                            targetEntity.trueX - renderManager.renderPosX
-                        val y =
-                            targetEntity.trueY - renderManager.renderPosY
-                        val z =
-                            targetEntity.trueZ - renderManager.renderPosZ
+                        val x = targetEntity.trueX - renderManager.renderPosX
+                        val y = targetEntity.trueY - renderManager.renderPosY
+                        val z = targetEntity.trueZ - renderManager.renderPosZ
 
                         val axisAlignedBB = entityBoundingBox.offset(-posX, -posY, -posZ).offset(x, y, z)
 
+                        // Render the backtrack box without flickering
                         drawBacktrackBox(
                             AxisAlignedBB.fromBounds(
                                 axisAlignedBB.minX,

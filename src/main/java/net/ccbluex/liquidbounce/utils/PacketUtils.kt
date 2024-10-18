@@ -7,19 +7,24 @@ package net.ccbluex.liquidbounce.utils
 
 import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.modules.combat.Velocity
-import net.ccbluex.liquidbounce.features.module.modules.combat.FakeLag
+import net.ccbluex.liquidbounce.features.module.modules.exploit.FakeLag
 import net.ccbluex.liquidbounce.injection.implementations.IMixinEntity
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.network.NetworkManager
 import net.minecraft.network.Packet
 import net.minecraft.network.play.INetHandlerPlayClient
+import net.minecraft.network.play.INetHandlerPlayServer
 import net.minecraft.network.play.client.C03PacketPlayer
 import net.minecraft.network.play.server.*
 import kotlin.math.roundToInt
 
+
 object PacketUtils : MinecraftInstance(), Listenable {
 
     val queuedPackets = mutableListOf<Packet<*>>()
+
+
+    private var packets: ArrayList<Packet<INetHandlerPlayServer>> = ArrayList()
 
     @EventTarget(priority = 2)
     fun onTick(event: GameTickEvent) {
@@ -35,6 +40,16 @@ object PacketUtils : MinecraftInstance(), Listenable {
                 }
             }
         }
+    }
+
+    @JvmStatic
+    fun sendPacketNoEvent(packet: Packet<INetHandlerPlayServer>) {
+        packets.add(packet)
+        mc.getNetHandler().addToSendQueue(packet);
+    }
+    fun sendPacketSilent(packet: Packet<INetHandlerPlayServer>) {
+        packets.add(packet)
+        mc.getNetHandler().addToSendQueue(packet);
     }
 
     @EventTarget(priority = 2)

@@ -55,7 +55,7 @@ class Notifications(
     private val exampleNotification = Notification("Notification", "This is an example notification.", Type.INFO)
 
     companion object {
-        val styleValue by ListValue("Mode", arrayOf("ZAVZ", "CLASSIC", "IDE"), "ZAVZ")
+        val styleValue by ListValue("Mode", arrayOf("ZAVZ", "CLASSIC", "IDE","Umbra"), "Umbra")
         val redValue by IntegerValue("Red", 255, 0..255) { styleValue == "ZAVZ" }
         val greenValue by IntegerValue("Green", 0, 0..255) { styleValue == "ZAVZ" }
         val blueValue by IntegerValue("Blue", 84, 0..255) { styleValue == "ZAVZ" }
@@ -93,7 +93,8 @@ class Notifications(
             return when (styleValue) {
                 "IDE" -> Border(-180F, -30F, 0F, 0F)
                 "ZAVZ" -> Border(-185F, -30F, 0F, 0F)
-                "CLASSIC" -> Border(0F, -30F, 135F, 0F)
+                "Umbra" -> Border(-185F, -30F, 0F, 0F)
+                "CLASSIC" -> Border(-185F, -30F, 0F, 0F)
                 else -> Border(-exampleNotification.width.toFloat(), exampleNotification.height.toFloat(), 0F, 0F)
             }
         }
@@ -431,6 +432,148 @@ class Notification(
                 height.toFloat() + 2.0,
                 Color(redValue, greenValue, blueValue).rgb,
                 Color(red2Value, green2Value, blue2Value).rgb
+            )
+            drawCircle(16f, 15f, 13f, 0, 360)
+
+            // Render Type-specific Icons
+            when (type) {
+                Type.INFO -> {
+                    fontIconXD85.drawString("B", 11F, 8F, 0)
+                }
+                Type.WARNING -> {
+                    fontIconXD85.drawString("A", 14F, 8F, 0)
+                }
+                Type.ERROR -> {
+                    fontNovoAngularIcon85.drawString("L", 9F, 10F, 0)
+                }
+                else -> {
+                    fontNovoAngularIcon85.drawString("M", 8F, 10F, 0)
+                }
+            }
+
+            // Render text content and timing
+            fontSFUI40.drawString(title, 34F, 4F, -1)
+            fontSFUI35.drawString(
+                "$content  (" + BigDecimal(((time - time * ((nowTime - displayTime) / (animeTime * 2F + time))) / 1000).toDouble()).setScale(
+                    1,
+                    BigDecimal.ROUND_HALF_UP
+                ).toString() + "s)", 34F, 17F, -1
+            )
+
+            GlStateManager.resetColor()
+            return false
+        }
+        if (style == "Umbra") {
+            val width = 100.coerceAtLeast((font35.getStringWidth(this.content)) + 70)
+
+            // Y-Axis Animation
+            if (nowY != realY) {
+                var pct = (nowTime - animeYTime) / animeTime.toDouble()
+                if (pct > 1) {
+                    nowY = realY
+                    pct = 1.0
+                } else {
+                    // Ease-out back animation could be applied here
+                    pct = easeOutBackNotify(pct)
+                }
+                GL11.glTranslated(0.0, (realY - nowY) * pct, 0.0)
+            } else {
+                animeYTime = nowTime
+            }
+            GL11.glTranslated(0.0, nowY.toDouble(), 0.0)
+
+            // X-Axis Animation
+            var pct = (nowTime - animeXTime) / animeTime.toDouble()
+            when (fadeState) {
+                FadeState.IN -> {
+                    if (pct > 1) {
+                        fadeState = FadeState.STAY
+                        animeXTime = nowTime
+                        pct = 1.0
+                    }
+                    // Ease-out back animation could be applied here
+                    pct = easeOutBackNotify(pct)
+                }
+
+                FadeState.STAY -> {
+                    pct = 1.0
+                    if ((nowTime - animeXTime) > time) {
+                        fadeState = FadeState.OUT
+                        animeXTime = nowTime
+                    }
+                }
+
+                FadeState.OUT -> {
+                    if (pct > 1) {
+                        fadeState = FadeState.END
+                        animeXTime = nowTime
+                        pct = 1.0
+                    }
+                    // Inverse easing could be applied here
+                    pct = 1 - easeInBackNotify(pct)
+                }
+
+                FadeState.END -> {
+                    return true
+                }
+            }
+            GL11.glScaled(pct, pct, pct)
+            GL11.glTranslatef(-width.toFloat(), -height.toFloat() + 30, 0F)
+
+            // Rendering shapes and elements
+            RenderUtils.drawShadow(1F, 0F, width.toFloat() - 1, height.toFloat())
+            drawRect(1F, 0F, width.toFloat(), height.toFloat(), Color(0, 0, 0, 50))
+
+            // Set up colors for the FIOLET style
+            val purpleColor1 = Color(90, 10, 200, 255) // Fioletowy kolor
+            val purpleColor2 = Color(120, 30, 240, 255) // Inny odcień fioletu
+
+            // Draw Circle Function
+            fun drawCircle(x: Float, y: Float, radius: Float, start: Int, end: Int) {
+                GlStateManager.enableBlend()
+                GlStateManager.disableTexture2D()
+                GlStateManager.tryBlendFuncSeparate(
+                    GL11.GL_SRC_ALPHA,
+                    GL11.GL_ONE_MINUS_SRC_ALPHA,
+                    GL11.GL_ONE,
+                    GL11.GL_ZERO
+                )
+                GL11.glEnable(GL11.GL_LINE_SMOOTH)
+                GL11.glLineWidth(2f)
+                GL11.glBegin(GL11.GL_LINE_STRIP)
+                var i = end.toFloat()
+                while (i >= start) {
+                    val c = RenderUtils.getGradientOffset(
+                        purpleColor1,
+                        purpleColor2,
+                        (abs(System.currentTimeMillis() / 360.0 + (i * 34 / 360) * 56 / 100) / 10)
+                    ).rgb
+                    val f2 = (c shr 24 and 255).toFloat() / 255.0f
+                    val f22 = (c shr 16 and 255).toFloat() / 255.0f
+                    val f3 = (c shr 8 and 255).toFloat() / 255.0f
+                    val f4 = (c and 255).toFloat() / 255.0f
+                    GlStateManager.color(f22, f3, f4, f2)
+                    GL11.glVertex2f(
+                        (x + cos(i * Math.PI / 180) * (radius * 1.001f)).toFloat(),
+                        (y + sin(i * Math.PI / 180) * (radius * 1.001f)).toFloat()
+                    )
+                    i -= 360f / 90.0f
+                }
+                GL11.glEnd()
+                GL11.glDisable(GL11.GL_LINE_SMOOTH)
+                GlStateManager.enableTexture2D()
+                GlStateManager.disableBlend()
+            }
+
+            // Drawing the circle and additional elements
+            RenderUtils.drawFilledForCircle(16f, 15f, 12.85f, Color(255, 255, 255, 255))
+            RenderUtils.drawGradientSideways(
+                1.0,
+                height.toFloat() + 0.0,
+                width * ((nowTime - displayTime) / (animeTime * 2F + time)) + 0.0,
+                height.toFloat() + 2.0,
+                purpleColor1.rgb,
+                purpleColor2.rgb
             )
             drawCircle(16f, 15f, 13f, 0, 360)
 

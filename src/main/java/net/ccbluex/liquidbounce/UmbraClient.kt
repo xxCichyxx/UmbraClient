@@ -58,6 +58,8 @@ object UmbraClient {
      * This has all of the basic information.
      */
     const val CLIENT_NAME = "UmbraClient"
+    const val CLIENTTITTLE_NAME = "Umbra Client"
+    const val CLIENT_CHAT = "§5D§de§3b§bu§6g §r"
     const val CLIENT_AUTHOR = "xxCichyxx"
     const val CLIENT_CLOUD = "https://cloud.liquidbounce.net/LiquidBounce"
     const val CLIENT_WEBSITE = "blockbypass.pl"
@@ -72,9 +74,9 @@ object UmbraClient {
      * Defines if the client is in development mode.
      * This will enable update checking on commit time instead of regular legacy versioning.
      */
-    const val IN_DEV = false
+    const val IN_DEV = true
 
-    val clientTitle = CLIENT_NAME + if (IN_DEV) " | DEV BUILD" else ""
+    val clientTitle = CLIENTTITTLE_NAME + if (IN_DEV) " | DEV BUILD" else ""
 
     var isStarting = true
     var isLoadingConfig = true

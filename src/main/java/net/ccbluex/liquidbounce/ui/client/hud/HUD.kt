@@ -8,6 +8,8 @@ package net.ccbluex.liquidbounce.ui.client.hud
 import net.ccbluex.liquidbounce.ui.client.hud.designer.GuiHudDesigner
 import net.ccbluex.liquidbounce.ui.client.hud.element.Element
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.*
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Text.Companion.defaultBPS
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Text.Companion.defaultClient2
 import net.ccbluex.liquidbounce.utils.ClassUtils
 import net.ccbluex.liquidbounce.utils.ClientUtils.LOGGER
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
@@ -32,6 +34,8 @@ object HUD : MinecraftInstance() {
   fun setDefault() {
       elements.clear()
 
+      addElement(defaultClient2())
+      addElement(defaultBPS())
       addElement(Arraylist())
       addElement(ScoreboardElement())
       addElement(Notifications())

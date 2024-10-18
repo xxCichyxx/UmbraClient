@@ -9,12 +9,13 @@ import net.ccbluex.liquidbounce.event.*;
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.AntiHunger;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.Disabler;
+import net.ccbluex.liquidbounce.features.module.modules.fun.Derp;
 import net.ccbluex.liquidbounce.features.module.modules.movement.InvMove;
 import net.ccbluex.liquidbounce.features.module.modules.movement.NoSlow;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Sneak;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Sprint;
-import net.ccbluex.liquidbounce.features.module.modules.visual.FreeCam;
-import net.ccbluex.liquidbounce.features.module.modules.visual.NoSwing;
+import net.ccbluex.liquidbounce.features.module.modules.render.FreeCam;
+import net.ccbluex.liquidbounce.features.module.modules.render.NoSwing;
 import net.ccbluex.liquidbounce.utils.CooldownHelper;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
 import net.ccbluex.liquidbounce.utils.Rotation;
@@ -123,16 +124,27 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
     /**
      * @author CCBlueX
      */
+    float yaw = 0.0f;
+    float pitch = 0.0f;
     @Inject(method = "onUpdateWalkingPlayer", at = @At("HEAD"), cancellable = true)
     private void onUpdateWalkingPlayer(CallbackInfo ci) {
-        EventManager.INSTANCE.callEvent(new MotionEvent(EventState.PRE));
+        MotionEvent motionEvent = new MotionEvent(
+                posX,
+                getEntityBoundingBox().minY,
+                posZ,
+                yaw, // Dodaj yaw jako argument
+                pitch, // Dodaj pitch jako argument
+                onGround, // Przekaż wartość onGround
+                EventState.PRE // Ustaw domyślny stan zdarzenia
+        );
+        EventManager.INSTANCE.callEvent(motionEvent);
 
         final InvMove inventoryMove = InvMove.INSTANCE;
         final Sneak sneak = Sneak.INSTANCE;
         final boolean fakeSprint = inventoryMove.handleEvents() && inventoryMove.getAacAdditionPro()
                 || AntiHunger.INSTANCE.handleEvents()
                 || sneak.handleEvents() && (!MovementUtils.INSTANCE.isMoving() || !sneak.getStopMove()) && sneak.getMode().equals("MineSecure")
-                || Disabler.INSTANCE.handleEvents() && Disabler.INSTANCE.getMode().equals("StartSprint");
+                || Disabler.INSTANCE.handleEvents() && Disabler.INSTANCE.getStartSprint();
 
         boolean sprinting = isSprinting() && !fakeSprint;
 
@@ -160,14 +172,21 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
 
             final Rotation currentRotation = RotationUtils.INSTANCE.getCurrentRotation();
 
+            final Derp derp = Derp.INSTANCE;
+            if (derp.handleEvents()) {
+                Rotation rot = derp.getRotation();
+                yaw = rot.getYaw();
+                pitch = rot.getPitch();
+            }
+
             if (currentRotation != null) {
                 yaw = currentRotation.getYaw();
                 pitch = currentRotation.getPitch();
             }
 
-            double xDiff = posX - lastReportedPosX;
-            double yDiff = getEntityBoundingBox().minY - lastReportedPosY;
-            double zDiff = posZ - lastReportedPosZ;
+            double xDiff = motionEvent.getX() - lastReportedPosX;
+            double yDiff = motionEvent.getY() - lastReportedPosY;
+            double zDiff = motionEvent.getZ() - lastReportedPosZ;
             double yawDiff = yaw - this.lastReportedYaw;
             double pitchDiff = pitch - this.lastReportedPitch;
             boolean moved = xDiff * xDiff + yDiff * yDiff + zDiff * zDiff > 9.0E-4 || positionUpdateTicks >= 20;
@@ -175,26 +194,25 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
 
             if (ridingEntity == null) {
                 if (moved && rotated) {
-                    sendQueue.addToSendQueue(new C06PacketPlayerPosLook(posX, getEntityBoundingBox().minY, posZ, yaw, pitch, onGround));
+                    sendQueue.addToSendQueue(new C06PacketPlayerPosLook(motionEvent.getX(), motionEvent.getY(), motionEvent.getZ(), yaw, pitch, motionEvent.getOnGround()));
                 } else if (moved) {
-                    sendQueue.addToSendQueue(new C04PacketPlayerPosition(posX, getEntityBoundingBox().minY, posZ, onGround));
+                    sendQueue.addToSendQueue(new C04PacketPlayerPosition(motionEvent.getX(), motionEvent.getY(), motionEvent.getZ(), motionEvent.getOnGround()));
                 } else if (rotated) {
-                    sendQueue.addToSendQueue(new C05PacketPlayerLook(yaw, pitch, onGround));
+                    sendQueue.addToSendQueue(new C05PacketPlayerLook(yaw, pitch, motionEvent.getOnGround()));
                 } else {
-                    sendQueue.addToSendQueue(new C03PacketPlayer(onGround));
+                    sendQueue.addToSendQueue(new C03PacketPlayer(motionEvent.getOnGround()));
                 }
             } else {
-                sendQueue.addToSendQueue(new C06PacketPlayerPosLook(motionX, -999, motionZ, yaw, pitch, onGround));
+                sendQueue.addToSendQueue(new C06PacketPlayerPosLook(motionX, -999, motionZ, yaw, pitch, motionEvent.getOnGround()));
                 moved = false;
             }
 
             ++positionUpdateTicks;
 
             if (moved) {
-                lastReportedPosX = posX;
-                lastReportedPosY = getEntityBoundingBox().minY;
-                lastReportedPosZ = posZ;
-                positionUpdateTicks = 0;
+                lastReportedPosX = motionEvent.getX();
+                lastReportedPosY = motionEvent.getY();
+                lastReportedPosZ = motionEvent.getZ();
             }
 
             RotationUtils.INSTANCE.setServerRotation(new Rotation(yaw, pitch));
@@ -205,7 +223,15 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
             }
         }
 
-        EventManager.INSTANCE.callEvent(new MotionEvent(EventState.POST));
+        EventManager.INSTANCE.callEvent(new MotionEvent(
+                posX,
+                getEntityBoundingBox().minY,
+                posZ,
+                yaw, // Dodaj yaw jako argument
+                pitch, // Dodaj pitch jako argument
+                onGround, // Przekaż wartość onGround
+                EventState.POST // Ustaw stan na POST
+        ));
 
         EventManager.INSTANCE.callEvent(new RotationUpdateEvent());
 

@@ -8,7 +8,7 @@ package net.ccbluex.liquidbounce.features.module.modules.player
 import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.Category
-import net.ccbluex.liquidbounce.features.module.modules.visual.Breadcrumbs
+import net.ccbluex.liquidbounce.features.module.modules.render.Breadcrumbs
 import net.ccbluex.liquidbounce.utils.BlinkUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils.rainbow
 import net.ccbluex.liquidbounce.utils.render.RenderUtils.glColor
@@ -16,11 +16,6 @@ import net.ccbluex.liquidbounce.utils.timing.MSTimer
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.value.ListValue
-import net.minecraft.network.play.server.S02PacketChat
-import net.minecraft.network.play.server.S40PacketDisconnect
-import net.minecraft.network.status.client.C01PacketPing
-import net.minecraft.network.handshake.client.C00Handshake
-import net.minecraft.network.status.client.C00PacketServerQuery
 import org.lwjgl.opengl.GL11.*
 import java.awt.Color
 

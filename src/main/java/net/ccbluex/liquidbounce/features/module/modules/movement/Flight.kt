@@ -20,6 +20,7 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.flymodes.other.
 import net.ccbluex.liquidbounce.features.module.modules.movement.flymodes.spartan.BugSpartan
 import net.ccbluex.liquidbounce.features.module.modules.movement.flymodes.spartan.Spartan
 import net.ccbluex.liquidbounce.features.module.modules.movement.flymodes.spartan.Spartan2
+import net.ccbluex.liquidbounce.features.module.modules.movement.flymodes.vanilla.DefaultVanilla
 import net.ccbluex.liquidbounce.features.module.modules.movement.flymodes.vanilla.SmoothVanilla
 import net.ccbluex.liquidbounce.features.module.modules.movement.flymodes.vanilla.Vanilla
 import net.ccbluex.liquidbounce.features.module.modules.movement.flymodes.verus.Verus
@@ -46,7 +47,7 @@ import java.awt.Color
 
 object Flight : Module("Fly", Category.MOVEMENT, Keyboard.KEY_F, hideModule = false) {
     private val flyModes = arrayOf(
-        Vanilla, SmoothVanilla,
+        Vanilla, SmoothVanilla, DefaultVanilla,
 
         // NCP
         NCP, OldNCP,
@@ -76,7 +77,7 @@ object Flight : Module("Fly", Category.MOVEMENT, Keyboard.KEY_F, hideModule = fa
         MineSecure, HawkEye, HAC, WatchCat,
 
         // Other
-        Jetpack, KeepAlive, Collide, Jump, Flag, Fireball
+        Jetpack, KeepAlive, Collide, Jump, Flag, FlagUp, Fireball
     )
 
     /**
@@ -110,6 +111,14 @@ object Flight : Module("Fly", Category.MOVEMENT, Keyboard.KEY_F, hideModule = fa
     private var modesList = flyModes
 
     val mode = ListValue("Mode", modesList.map { it.modeName }.toTypedArray(), "Vanilla")
+    val smoothValue by BoolValue("Smooth", false) { mode.get() == "DefaultVanilla" }
+    val speedValue by FloatValue("Speed", 2f, 0f.. 5f) { mode.get() == "DefaultVanilla" }
+    val vspeedValue by FloatValue("Vertical", 2f, 0f..5f) { mode.get() == "DefaultVanilla" }
+    val kickBypassValue by BoolValue("KickBypass", false) { mode.get() == "DefaultVanilla" }
+    val kickBypassModeValue by ListValue("KickBypassMode", arrayOf("Motion", "Packet"), "Packet") {  kickBypassValue }
+    val kickBypassMotionSpeedValue by FloatValue("KickBypass-MotionSpeed", 0.0626F, 0.05F..0.1F) { kickBypassModeValue == "Motion" && kickBypassValue }
+    val noClipValue by BoolValue("NoClip", false) { mode.get() == "DefaultVanilla" }
+    val spoofValue by BoolValue("SpoofGround", false) { mode.get() == "DefaultVanilla" }
 
     val vanillaSpeed by FloatValue("VanillaSpeed", 2f, 0f..10f, subjective = true)
     { mode.get() in arrayOf("Vanilla", "KeepAlive", "MineSecure", "BugSpartan") }

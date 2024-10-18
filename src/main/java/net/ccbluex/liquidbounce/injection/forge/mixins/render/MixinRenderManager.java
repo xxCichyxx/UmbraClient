@@ -8,7 +8,7 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.render;
 import net.ccbluex.liquidbounce.features.module.modules.combat.Backtrack;
 import net.ccbluex.liquidbounce.features.module.modules.combat.ForwardTrack;
 import net.ccbluex.liquidbounce.features.module.modules.combat.HitBox;
-import net.ccbluex.liquidbounce.features.module.modules.visual.FreeCam;
+import net.ccbluex.liquidbounce.features.module.modules.render.FreeCam;
 import net.ccbluex.liquidbounce.injection.implementations.IMixinEntity;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;

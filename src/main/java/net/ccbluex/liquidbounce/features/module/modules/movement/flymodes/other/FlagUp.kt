@@ -12,26 +12,31 @@ import net.ccbluex.liquidbounce.utils.extensions.component2
 import net.ccbluex.liquidbounce.utils.extensions.component3
 import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition
 
-object Flag : FlyMode("Flag") {
+object FlagUp : FlyMode("FlagUp") {
 	override fun onUpdate() {
-		val (x, y, z) = mc.thePlayer
-		
+		val player = mc.thePlayer ?: return
+		val (x, y, z) = player
+
+		// Wysyłamy pakiety tylko z modyfikacją osi Y
 		sendPackets(
 			C04PacketPlayerPosition(
-				x + mc.thePlayer.motionX * 999,
+				x,
 				y + (if (mc.gameSettings.keyBindJump.isKeyDown) 1.5624 else 0.00000001) - if (mc.gameSettings.keyBindSneak.isKeyDown) 0.0624 else 0.00000002,
-				z + mc.thePlayer.motionZ * 999,
+				z,
 				true
 			),
 			C04PacketPlayerPosition(
-				x + mc.thePlayer.motionX * 999,
-				y - 6969,
-				z + mc.thePlayer.motionZ * 999,
+				x,
+				y - 6969,  // Duże przesunięcie w dół, aby "resetować" pozycję
+				z,
 				true
 			)
 		)
 
-		mc.thePlayer.setPosition(x + mc.thePlayer.motionX * 11, y, z + mc.thePlayer.motionZ * 11)
-		mc.thePlayer.motionY = 0.0
+		// Ustawiamy motionY na większą wartość, aby gracz faktycznie ruszył się w górę
+		player.motionY = 1.0 // To zapewnia faktyczne ruch w górę
+
+		// Przesuwamy gracza lekko w górę
+		player.setPosition(x, y + 0.0001, z)
 	}
 }

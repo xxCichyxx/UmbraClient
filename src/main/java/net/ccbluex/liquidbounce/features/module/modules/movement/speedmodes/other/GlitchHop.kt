@@ -9,7 +9,7 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.speedmodes.Spee
 import net.ccbluex.liquidbounce.utils.MovementUtils.isMoving
 import net.ccbluex.liquidbounce.utils.extensions.tryJump
 
-object CustomHop : SpeedMode("GlitchHop") {
+object GlitchHop : SpeedMode("GlitchHop") {
 
     override fun onUpdate() {
         val player = mc.thePlayer ?: return

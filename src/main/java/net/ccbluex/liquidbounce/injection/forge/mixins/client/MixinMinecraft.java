@@ -9,7 +9,7 @@ import net.ccbluex.liquidbounce.UmbraClient;
 import net.ccbluex.liquidbounce.features.module.modules.combat.TickBase;
 import net.ccbluex.liquidbounce.handler.api.ClientUpdate;
 import net.ccbluex.liquidbounce.event.*;
-import net.ccbluex.liquidbounce.features.module.modules.combat.AutoClicker;
+import net.ccbluex.liquidbounce.features.module.modules.ghost.AutoClicker;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.AbortBreaking;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.MultiActions;
 import net.ccbluex.liquidbounce.features.module.modules.other.FastPlace;

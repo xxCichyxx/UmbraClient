@@ -45,6 +45,10 @@ import org.lwjgl.opengl.GL11.glTranslatef
  */
 object Animations : Module("Animations", Category.CLIENT, gameDetecting = false, hideModule = false) {
 
+    init {
+        state = true
+    }
+
     // Default animation
     val defaultAnimation = OneSevenAnimation()
 
@@ -59,13 +63,13 @@ object Animations : Module("Animations", Category.CLIENT, gameDetecting = false,
         SulfurAnimation()
     )
 
-    private val animationMode by ListValue("Mode", animations.map { it.name }.toTypedArray(), "Pushdown")
+    private val animationMode by ListValue("Mode", animations.map { it.name }.toTypedArray(), "Old")
     val oddSwing by BoolValue("OddSwing", false)
     val swingSpeed by IntegerValue("SwingSpeed", 15, 0..20)
 
-    val handItemScale by FloatValue("ItemScale", 0f, -5f..5f)
-    val handX by FloatValue("X", 0f, -5f..5f)
-    val handY by FloatValue("Y", 0f, -5f..5f)
+    val handItemScale by FloatValue("ItemScale", -2.14f, -5f..5f)
+    val handX by FloatValue("X", 1.9f, -5f..5f)
+    val handY by FloatValue("Y", -0.6f, -5f..5f)
     val handPosX by FloatValue("PositionRotationX", 0f, -50f..50f)
     val handPosY by FloatValue("PositionRotationY", 0f, -50f..50f)
     val handPosZ by FloatValue("PositionRotationZ", 0f, -50f..50f)

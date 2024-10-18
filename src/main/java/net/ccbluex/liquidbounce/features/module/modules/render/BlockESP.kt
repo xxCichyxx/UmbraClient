@@ -3,7 +3,7 @@
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge by LiquidBounce.
  * https://github.com/xxCichyxx/UmbraClient
  */
-package net.ccbluex.liquidbounce.features.module.modules.visual
+package net.ccbluex.liquidbounce.features.module.modules.render
 
 import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.Render3DEvent
@@ -25,7 +25,7 @@ import net.minecraft.init.Blocks.air
 import net.minecraft.util.BlockPos
 import java.awt.Color
 
-object BlockESP : Module("BlockESP", Category.VISUAL, hideModule = false) {
+object BlockESP : Module("BlockESP", Category.RENDER, hideModule = false) {
     init {
         state = true
     }

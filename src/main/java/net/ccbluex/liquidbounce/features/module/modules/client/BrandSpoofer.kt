@@ -20,6 +20,9 @@ object BrandSpoofer : Module("BrandSpoofer", Category.CLIENT, hideModule = false
     /**
      * The Mode value.
      */
+    init {
+        state = true
+    }
     val possibleBrands = ListValue(
         "Mode", arrayOf(
             "Vanilla",
@@ -35,10 +38,10 @@ object BrandSpoofer : Module("BrandSpoofer", Category.CLIENT, hideModule = false
             "Geyser",
             "Log4j",
             "Custom",
-        ), "FDP"
+        ), "Custom"
     )
 
-    val customValue = TextValue("Custom-Brand", "WTF") { possibleBrands.get().equals("Custom", true) }
+    val customValue = TextValue("Custom-Brand", "UMBRA") { possibleBrands.get().equals("Custom", true) }
 
     private val buttonValue = ListValue(
         "Button",
@@ -52,7 +55,7 @@ object BrandSpoofer : Module("BrandSpoofer", Category.CLIENT, hideModule = false
             "PVP",
             "Vanilla"
         ),
-        "FDP"
+        "Rounded"
     )
 
     fun getButtonRenderer(button: GuiButton?): AbstractButtonRenderer? {

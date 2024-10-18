@@ -7,7 +7,7 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.render;
 
 import net.ccbluex.liquidbounce.event.EventManager;
 import net.ccbluex.liquidbounce.event.UpdateModelEvent;
-import net.ccbluex.liquidbounce.features.module.modules.visual.CustomModel;
+import net.ccbluex.liquidbounce.features.module.modules.render.CustomModel;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBox;

@@ -58,7 +58,7 @@ object Velocity : Module("Velocity", Category.COMBAT, hideModule = false) {
             "Simple", "AAC", "AACPush", "AACZero", "AACv4",
             "Reverse", "SmoothReverse", "Jump", "Glitch", "Legit",
             "GhostBlock", "Vulcan", "S32Packet", "MatrixReduce",
-            "Intave", "Delay", "GrimC03", "HypixelAir"
+            "IntaveReduce", "Intave", "Delay", "GrimC03", "HypixelAir"
         ), "Simple"
     )
 
@@ -86,6 +86,10 @@ object Velocity : Module("Velocity", Category.COMBAT, hideModule = false) {
 
     // Legit
     private val legitDisableInAir by BoolValue("DisableInAir", true) { mode == "Legit" }
+
+    // IntaveReduce
+    private val reduceFactor by FloatValue("Factor", 0.6f, 0.6f..1f) { mode == "IntaveReduce" }
+    private val hurtTime by IntegerValue("HurtTime", 9, 1..10) { mode == "IntaveReduce" }
 
     // Chance
     private val chance by IntegerValue("Chance", 100, 0..100) { mode == "Jump" || mode == "Legit" }
@@ -145,8 +149,10 @@ object Velocity : Module("Velocity", Category.COMBAT, hideModule = false) {
     // Jump
     private var limitUntilJump = 0
 
-    // Intave
+    // IntaveReduce
     private var intaveTick = 0
+    private var lastAttackTime = 0L
+    private var intaveDamageTick = 0
 
     // Delay
     private val packets = LinkedHashMap<Packet<*>, Long>()
@@ -303,6 +309,17 @@ object Velocity : Module("Velocity", Category.COMBAT, hideModule = false) {
                     thePlayer.motionY *= vertical.toDouble()
                 }
             }
+            "IntaveReduce" -> {
+                if (!hasReceivedVelocity) return
+                intaveTick++
+                if (mc.thePlayer.hurtTime == 2) {
+                    intaveDamageTick++
+                    if (thePlayer.onGround && intaveTick % 2 == 0 && intaveDamageTick <= 10) {
+                        thePlayer.tryJump()
+                        intaveTick = 0
+                    }
+                }
+            }
 
             "intave" -> {
                 intaveTick++
@@ -324,6 +341,16 @@ object Velocity : Module("Velocity", Category.COMBAT, hideModule = false) {
                 }
             }
         }
+    }
+    @EventTarget
+    fun onAttack(event: AttackEvent) {
+        val player = mc.thePlayer ?: return
+        if (mode != "IntaveReduce") return
+        if (player.hurtTime == hurtTime && System.currentTimeMillis() - lastAttackTime <= 8000) {
+            player.motionX *= reduceFactor
+            player.motionZ *= reduceFactor
+        }
+        lastAttackTime = System.currentTimeMillis()
     }
 
     private fun checkAir(blockPos: BlockPos): Boolean {
@@ -389,7 +416,7 @@ object Velocity : Module("Velocity", Category.COMBAT, hideModule = false) {
             when (mode.lowercase()) {
                 "simple" -> handleVelocity(event)
 
-                "aac", "reverse", "smoothreverse", "aaczero", "ghostblock", "intave" -> hasReceivedVelocity = true
+                "aac", "reverse", "smoothreverse", "aaczero", "ghostblock", "intave", "intaveReduce" -> hasReceivedVelocity = true
 
                 "jump" -> {
                     // TODO: Recode and make all velocity modes support velocity direction checks
