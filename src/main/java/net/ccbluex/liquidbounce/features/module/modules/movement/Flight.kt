@@ -62,7 +62,7 @@ object Flight : Module("Fly", Category.MOVEMENT, Keyboard.KEY_F, hideModule = fa
         Hypixel, BoostHypixel, FreeHypixel,
 
         // Other server specific flys
-        NeruxVace, Minesucht, BlocksMC, BlocksMC2,
+        NeruxVace, Minesucht, BlocksMC, BlocksMC2, OmegaCraft,
 
         // Spartan
         Spartan, Spartan2, BugSpartan,
@@ -125,6 +125,8 @@ object Flight : Module("Fly", Category.MOVEMENT, Keyboard.KEY_F, hideModule = fa
     private val vanillaKickBypass by BoolValue("VanillaKickBypass", false, subjective = true)
     { mode.get() in arrayOf("Vanilla", "SmoothVanilla") }
     val ncpMotion by FloatValue("NCPMotion", 0f, 0f..1f) { mode.get() == "NCP" }
+
+    val LibreCraftSpeed by FloatValue("Speed", 2f, 0f..10f, subjective = true) {mode.get() == "LibreCraft"}
 
     // AAC
     val aacSpeed by FloatValue("AAC1.9.10-Speed", 0.3f, 0f..1f) { mode.get() == "AAC1.9.10" }

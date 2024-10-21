@@ -104,6 +104,26 @@ open class BoolValue(
 /**
  * Integer value represents a value with a integer
  */
+open class LongDelegateValue(
+    private val name: String,
+    private var value: Long,
+    val range: LongRange,
+    private val condition: () -> Boolean
+) {
+    operator fun getValue(thisRef: Any?, property: kotlin.reflect.KProperty<*>): Long {
+        return if (condition()) value else 0L // Ensure the return type is Long
+    }
+
+    operator fun setValue(thisRef: Any?, property: kotlin.reflect.KProperty<*>, newValue: Long) {
+        if (newValue in range) {
+            value = newValue
+        } else {
+            throw IllegalArgumentException("$name must be in range $range")
+        }
+    }
+}
+
+
 open class IntegerValue(
     name: String,
     value: Int,
@@ -263,7 +283,6 @@ open class MultiListValue(
     operator fun contains(string: String?) = values.any { it.equals(string, true) }
 
     override fun changeValue(newValue: List<String>) {
-        if (newValue.isEmpty()) return
 
         val filteredValues = newValue.filter { valueToKeep -> values.any { it.equals(valueToKeep, true) } }
 

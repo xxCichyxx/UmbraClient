@@ -94,6 +94,11 @@ class MotionEvent(
     val eventState: EventState = EventState.PRE
 ) : Event()
 
+
+class KeyPressEvent(val key: Int) : CancellableEvent()
+
+class MouseHoverEvent(val mouseButton: Int) : CancellableEvent()
+
 /**
  * Called in "onLivingUpdate" when the player is using a use item.
  *

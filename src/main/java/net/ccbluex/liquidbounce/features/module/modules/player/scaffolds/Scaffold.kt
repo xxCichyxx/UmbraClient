@@ -139,7 +139,7 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_X, hideModule
     private val autoF5 by BoolValue("AutoF5", false, subjective = true)
 
     // Basic stuff
-    private val autojump0 by BoolValue("AutoJump", false)
+    private val autojump0 by BoolValue("Jump", false)
     private val automaticjumps by IntegerValue("JumpTicks", 1, 1..450) { autojump0 }
     val sprint by BoolValue("Sprint", false)
     val sprintMode by ListValue("SprintMode", arrayOf("Off","Vanilla","Packet","Motion","MotionPacket","onGround","OneTick"), "Off") { sprint }

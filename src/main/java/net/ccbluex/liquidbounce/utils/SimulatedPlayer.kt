@@ -7,7 +7,7 @@ package net.ccbluex.liquidbounce.utils
 
 import com.google.common.base.Predicate
 import com.google.common.collect.Lists
-import net.ccbluex.liquidbounce.features.module.modules.movement.NoJumpDelay
+import net.ccbluex.liquidbounce.features.module.modules.`fun`.NoJumpDelay
 import net.ccbluex.liquidbounce.utils.extensions.SimulatedPlayerJavaExtensions
 import net.minecraft.block.*
 import net.minecraft.block.material.Material

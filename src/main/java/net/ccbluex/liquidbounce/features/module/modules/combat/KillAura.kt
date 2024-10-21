@@ -9,6 +9,7 @@ import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.event.EventManager.callEvent
 import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.features.module.Module
+import net.ccbluex.liquidbounce.features.module.modules.ghost.LegitAura
 import net.ccbluex.liquidbounce.features.module.modules.other.Fucker
 import net.ccbluex.liquidbounce.features.module.modules.other.Nuker
 import net.ccbluex.liquidbounce.features.module.modules.player.Blink
@@ -78,7 +79,7 @@ object KillAura : Module("KillAura", Category.COMBAT, Keyboard.KEY_R, hideModule
     private val simulateDoubleClicking by BoolValue("SimulateDoubleClicking", false) { !simulateCooldown }
 
     // CPS - Attack speed
-    private val cpsMode by ListValue("CPSMode", arrayOf("DragClick", "ButterFly", "Stabilized","Itter", "Legit"), "Legit")
+    private val cpsMode by ListValue("CPSMode", arrayOf("DragClick", "ButterFly", "Stabilized","Itter", "Legit", "Burst", "Random"), "Legit")
     private val maxCPSValue = object : IntegerValue("MaxCPS", 8, 1..20) {
         override fun onChange(oldValue: Int, newValue: Int) = newValue.coerceAtLeast(minCPS)
 
@@ -361,50 +362,48 @@ object KillAura : Module("KillAura", Category.COMBAT, Keyboard.KEY_R, hideModule
     // cps delays
     private var currentCPS = minCPS
 
+    var itterStep: Int = 1 // Krok zwiększenia CPS w trybie Itter
+    var itterDelay: Long = 1000 // Opóźnienie między krokami w ms
+    var dropAmount: Int = 20 // Liczba kliknięć w jednym dropie
+    var dropInterval: Long = 100 // Czas trwania dropu w ms
+
     private fun calculateAttackDelay(): Int {
         return when (cpsMode) {
-            "DragClick" -> {
-                randomClickDelay(2, maxCPS)
-            }
-            "ButterFly" -> {
-                randomClickDelay(minCPS, maxCPS)
-            }
-            "Stabilized" -> {
-                (1000 / ((minCPS + maxCPS) / 2))
-            }
-            "Itter" -> {
-                itterCPS()
-            }
-            "Legit" -> {
-                // Ustal, że "Legit" ma umiarkowane opóźnienie dla realistycznego klikania
-                (1200 / (maxCPS + 3)) // Przykład: maxCPS + 2 dla większego opóźnienia
-            }
+            "DragClick" -> randomClickDelay(20, maxCPS) // 20 kliknięć z dropem
+            "ButterFly" -> randomClickDelay(minCPS, maxCPS) // Klikanie Butterfly
+            "Stabilized" -> (1000 / ((minCPS + maxCPS) / 2)) // Stabilizowane CPS
+            "Itter" -> itterCPS() // Iteracyjne CPS
+            "Legit" -> (1200 / (maxCPS + 3)) // Klikanie Legit
+            "Burst" -> burstClickDelay(dropAmount, dropInterval)
+            "Random" -> randomClickDelay(5, 50) // Nowy tryb: Random clicks
             else -> 1000 / minCPS // Domyślna wartość
         }
     }
+    private fun burstClickDelay(dropAmount: Int, dropInterval: Long): Int {
+        val delay = 1000 / dropAmount // Opóźnienie na kliknięcie w trybie Burst
 
+        // Wykonanie kliknięć w burst
+        for (i in 1..dropAmount) {
+            Thread.sleep(dropInterval)
+        }
 
-    private fun dragClickCPS(): Int {
-        return 1000 / maxCPS
+        return delay
     }
 
-    private fun butterflyCPS(): Int {
-        return 1000 / minCPS
-    }
-
-    private fun stabilizedCPS(): Int {
-        return 1000 / ((minCPS + maxCPS) / 2)
+    // Nowa metoda dla trybu "Random"
+    private fun randomClickDelay(minCPS: Int, maxCPS: Int): Int {
+        val randomCPS = (minCPS..maxCPS).random() // Losowa liczba kliknięć na sekundę
+        return 1000 / randomCPS // Obliczamy opóźnienie na podstawie losowej CPS
     }
 
     private fun itterCPS(): Int {
-        currentCPS = if (currentCPS >= maxCPS) {
-            minCPS
-        } else {
-            currentCPS + 1
+        currentCPS += itterStep
+        if (currentCPS > maxCPS) {
+            currentCPS = minCPS
         }
+        Thread.sleep(itterDelay)
         return 1000 / currentCPS
     }
-
     // Container Delay
     private var containerOpen = -1L
 

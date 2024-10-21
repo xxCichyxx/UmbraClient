@@ -79,16 +79,6 @@ object Sprint : Module("Sprint", Category.MOVEMENT, gameDetecting = false, hideM
         if ((onlyOnSprintPress || !handleEvents()) && !player.isSprinting && !mc.gameSettings.keyBindSprint.isKeyDown && !SuperKnockback.startSprint() && !isSprinting)
             return
 
-        if (Derp.handleEvents()){
-            if (isMoving && player.onGround && Derp.noSprint) {
-                player.isSprinting = false
-                isSprinting = false
-                return
-            } else if (isMoving && player.onGround && !Derp.noSprint) {
-                return
-            }
-        }
-
         if (Scaffold.handleEvents()) {
             when (sprintMode) {
                 "Off" -> {

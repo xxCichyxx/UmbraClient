@@ -12,7 +12,7 @@ import net.ccbluex.liquidbounce.UmbraClient.commandManager
 import net.ccbluex.liquidbounce.UmbraClient.moduleManager
 import net.ccbluex.liquidbounce.handler.cape.CapeService
 import net.ccbluex.liquidbounce.features.module.modules.client.BrandSpoofer.possibleBrands
-import net.ccbluex.liquidbounce.features.module.modules.client.LiquidChat.jwtToken
+import net.ccbluex.liquidbounce.features.module.modules.client.IRC.jwtToken
 import net.ccbluex.liquidbounce.features.module.modules.client.TargetModule.animalValue
 import net.ccbluex.liquidbounce.features.module.modules.client.TargetModule.deadValue
 import net.ccbluex.liquidbounce.features.module.modules.client.TargetModule.invisibleValue

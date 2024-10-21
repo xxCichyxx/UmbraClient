@@ -22,23 +22,45 @@ import net.ccbluex.liquidbounce.utils.RotationUtils.toRotation
 import net.ccbluex.liquidbounce.utils.SimulatedPlayer
 import net.ccbluex.liquidbounce.utils.extensions.*
 import net.ccbluex.liquidbounce.utils.timing.MSTimer
-import net.ccbluex.liquidbounce.value.BoolValue
-import net.ccbluex.liquidbounce.value.FloatValue
-import net.ccbluex.liquidbounce.value.IntegerValue
-import net.ccbluex.liquidbounce.value.ListValue
+import net.ccbluex.liquidbounce.utils.timing.TimeUtils.randomClickDelay
+import net.ccbluex.liquidbounce.value.*
 import net.minecraft.entity.Entity
 import java.util.*
 import kotlin.math.atan
 
-object Aimbot : Module("Aimbot", Category.GHOST, hideModule = false) {
+object LegitAura : Module("LegitAura", Category.GHOST, hideModule = false) {
+
+    // New Reach Mode
+    private val reachMode by ListValue("ReachMode", arrayOf("Normal", "Reach", "Legit"), "Normal")
+
+    // CPS - Attack speed
+    private val cpsMode by ListValue("CPSMode", arrayOf("DragClick", "ButterFly", "Stabilized", "Itter", "Legit", "Burst", "Random"), "Legit")
+    private val maxCPSValue = object : IntegerValue("MaxCPS", 8, 1..20) {
+        override fun onChange(oldValue: Int, newValue: Int) = newValue.coerceAtLeast(minCPS)
+
+        override fun onChanged(oldValue: Int, newValue: Int) {
+            attackDelay = calculateAttackDelay()
+        }
+    }
+
+    private val maxCPS by maxCPSValue
+
+    private val minCPS: Int by object : IntegerValue("MinCPS", 5, 1..20) {
+        override fun onChange(oldValue: Int, newValue: Int) = newValue.coerceAtMost(maxCPS)
+
+        override fun onChanged(oldValue: Int, newValue: Int) {
+            attackDelay = calculateAttackDelay()
+        }
+    }
+
 
     private val horizontalAim by BoolValue("HorizontalAim", true)
     private val verticalAim by BoolValue("VerticalAim", true)
-    private val range by FloatValue("Range", 4.4F, 1F..8F)
+    private val raycast by BoolValue("Raycast", true)
+    private val attackRange by FloatValue("AttackRange", 4.0F, 1F..8F)
+    private val scanRange by FloatValue("ScanRange", 4.4F, 1F..8F)
     private val startRotatingSlow by BoolValue("StartRotatingSlow", true) { horizontalAim || verticalAim }
-    private val slowDownOnDirectionChange by BoolValue("SlowDownOnDirectionChange",
-        false
-    ) { horizontalAim || verticalAim }
+    private val slowDownOnDirectionChange by BoolValue("SlowDownOnDirectionChange", false) { horizontalAim || verticalAim }
     private val useStraightLinePath by BoolValue("UseStraightLinePath", true) { horizontalAim || verticalAim }
     private val turnSpeed by FloatValue("TurnSpeed", 10f, 1F..180F) { horizontalAim || verticalAim }
     private val inViewTurnSpeed by FloatValue("InViewTurnSpeed", 35f, 1f..180f) { horizontalAim || verticalAim }
@@ -88,19 +110,68 @@ object Aimbot : Module("Aimbot", Category.GHOST, hideModule = false) {
     }
 
     private val minRotationDifference by FloatValue("MinRotationDifference", 0f, 0f..2f) { verticalAim || horizontalAim }
-
-    private val fov by FloatValue("FOV", 180F, 1F..180F)
     private val lock by BoolValue("Lock", true) { horizontalAim || verticalAim }
     private val onClick by BoolValue("OnClick", false) { horizontalAim || verticalAim }
     private val jitter by BoolValue("Jitter", false)
-    private val yawJitterMultiplier by FloatValue("JitterYawMultiplier", 1f, 0.1f..2.5f)
-    private val pitchJitterMultiplier by FloatValue("JitterPitchMultiplier", 1f, 0.1f..2.5f)
+    private val yawJitterMultiplier by FloatValue("JitterYawMultiplier", 1f, 0.1f..2.5f) {jitter}
+    private val pitchJitterMultiplier by FloatValue("JitterPitchMultiplier", 1f, 0.1f..2.5f) {jitter}
     private val center by BoolValue("Center", false)
     private val headLock by BoolValue("Headlock", false) { center && lock }
     private val headLockBlockHeight by FloatValue("HeadBlockHeight", -1f, -2f..0f) { headLock && center && lock }
     private val breakBlocks by BoolValue("BreakBlocks", true)
 
     private val clickTimer = MSTimer()
+
+    var itterStep: Int = 1 // Krok zwiększenia CPS w trybie Itter
+    var itterDelay: Long = 1000 // Opóźnienie między krokami w ms
+    var dropAmount: Int = 20 // Liczba kliknięć w jednym dropie
+    var dropInterval: Long = 100 // Czas trwania dropu w ms
+
+    // Attack delay
+    private var attackDelay = 0
+    private var currentCPS = minCPS
+
+    private fun calculateAttackDelay(): Int {
+        return when (cpsMode) {
+            "DragClick" -> randomClickDelay(20, maxCPS) // 20 kliknięć z dropem
+            "ButterFly" -> randomClickDelay(minCPS, maxCPS) // Klikanie Butterfly
+            "Stabilized" -> (1000 / ((minCPS + maxCPS) / 2)) // Stabilizowane CPS
+            "Itter" -> itterCPS() // Iteracyjne CPS
+            "Legit" -> (1200 / (maxCPS + 3)) // Klikanie Legit
+            "Burst" -> burstClickDelay(dropAmount, dropInterval)
+            "Random" -> randomClickDelay(5, 50) // Nowy tryb: Random clicks
+            else -> 1000 / minCPS // Domyślna wartość
+        }
+    }
+    private fun burstClickDelay(dropAmount: Int, dropInterval: Long): Int {
+        val delay = 1000 / dropAmount // Opóźnienie na kliknięcie w trybie Burst
+
+        // Wykonanie kliknięć w burst
+        for (i in 1..dropAmount) {
+            Thread.sleep(dropInterval)
+        }
+
+        return delay
+    }
+
+    // Nowa metoda dla trybu "Random"
+    private fun randomClickDelay(minCPS: Int, maxCPS: Int): Int {
+        val randomCPS = (minCPS..maxCPS).random() // Losowa liczba kliknięć na sekundę
+        return 1000 / randomCPS // Obliczamy opóźnienie na podstawie losowej CPS
+    }
+
+    private fun itterCPS(): Int {
+        // Zwiększ CPS o krok (itterStep)
+        currentCPS += itterStep
+        if (currentCPS > maxCPS) {
+            currentCPS = minCPS // Reset do minimalnej CPS, jeśli przekroczono maxCPS
+        }
+
+        // Opóźnienie przed kolejnym kliknięciem
+        Thread.sleep(itterDelay)
+
+        return 1000 / currentCPS // Oblicz opóźnienie na podstawie aktualnego CPS
+    }
 
     @EventTarget
     fun onMotion(event: MotionEvent) {
@@ -114,26 +185,42 @@ object Aimbot : Module("Aimbot", Category.GHOST, hideModule = false) {
 
         if (onClick && (clickTimer.hasTimePassed(150) || (!mc.gameSettings.keyBindAttack.isKeyDown && AutoClicker.handleEvents()))) return
 
-        // Search for the best enemy to target
-        val entity = theWorld.loadedEntityList.filter {
-            var result = false
-
-            Backtrack.runWithNearestTrackedDistance(it) {
-                result = isSelected(it, true)
-                        && thePlayer.canEntityBeSeen(it)
-                        && thePlayer.getDistanceToEntityBox(it) <= range
-                        && rotationDifference(it) <= fov
-            }
-
-            result
-        }.minByOrNull { thePlayer.getDistanceToEntityBox(it) } ?: return
-
-        // Should it always keep trying to lock on the enemy or just try to assist you?
-        if (!lock && isFaced(entity, range.toDouble())) return
-
         val random = Random()
 
         var shouldReturn = false
+        // Search for the best enemy to target
+        val entity = theWorld.loadedEntityList.filter {
+            isSelected(it, true) &&
+                    thePlayer.canEntityBeSeen(it) &&
+                    thePlayer.getDistanceToEntityBox(it) <= scanRange &&
+                    rotationDifference(it) <= 180 // Use FOV for rotation
+        }.minByOrNull { thePlayer.getDistanceToEntityBox(it) } ?: return
+
+        val blockReachDistance = when (reachMode) {
+            "Normal" -> attackRange.toDouble()
+            "Reach" -> (if (Reach.handleEvents()) Reach.combatReach else 3f).toDouble()
+            "Legit" -> 3.0 // Use a more legit reach value for this mode
+            else -> 3.0
+        }
+
+        // Opóźnienie ataku
+        if (clickTimer.hasTimePassed(attackDelay)) {
+            if (raycast) {
+                if (isFaced(entity, blockReachDistance)) {
+                    thePlayer.swingItem()
+                    mc.playerController.attackEntity(thePlayer, entity)
+                    clickTimer.reset()
+                }
+            } else {
+                // Jeśli Raycast jest wyłączony, wykonuje atak bez względu na to, czy gracz jest naprowadzony
+                thePlayer.swingItem()
+                mc.playerController.attackEntity(thePlayer, entity)
+                clickTimer.reset()
+            }
+        }
+
+        // Check if the entity is within scan range
+        if (thePlayer.getDistanceToEntityBox(entity) > scanRange) return
 
         Backtrack.runWithNearestTrackedDistance(entity) {
             shouldReturn = !findRotation(entity, random)
@@ -144,7 +231,6 @@ object Aimbot : Module("Aimbot", Category.GHOST, hideModule = false) {
         }
 
         // Jitter
-        // Some players do jitter on their mouses causing them to shake around. This is trying to simulate this behavior.
         if (jitter) {
             if (random.nextBoolean()) {
                 thePlayer.fixedSensitivityYaw += ((random.nextGaussian() - 0.5f) * yawJitterMultiplier).toFloat()
@@ -159,7 +245,7 @@ object Aimbot : Module("Aimbot", Category.GHOST, hideModule = false) {
     private fun findRotation(entity: Entity, random: Random): Boolean {
         val player = mc.thePlayer ?: return false
         if (mc.playerController.isHittingBlock && breakBlocks) {
-            return false
+            return true
         }
 
         val (predictX, predictY, predictZ) = entity.currPos.subtract(entity.prevPos)
@@ -185,7 +271,7 @@ object Aimbot : Module("Aimbot", Category.GHOST, hideModule = false) {
                 outborder = false,
                 random = false,
                 predict = true,
-                lookRange = range,
+                lookRange = scanRange,
                 attackRange = if (Reach.handleEvents()) Reach.combatReach else 3f,
                 bodyPoints = listOf(highestBodyPointToTarget, lowestBodyPointToTarget),
                 horizontalSearch = minHorizontalBodySearch.get()..maxHorizontalBodySearch.get(),
@@ -222,6 +308,7 @@ object Aimbot : Module("Aimbot", Category.GHOST, hideModule = false) {
         val gaussian = random.nextGaussian()
 
         val realisticTurnSpeed = rotationDiff * ((supposedTurnSpeed + (gaussian - 0.5)) / 180)
+
         val rotation = limitAngleChange(player.rotation,
             destinationRotation,
             realisticTurnSpeed.toFloat(),
@@ -231,7 +318,7 @@ object Aimbot : Module("Aimbot", Category.GHOST, hideModule = false) {
             minRotationDifference = minRotationDifference
         )
 
-        rotation.toPlayer(player, horizontalAim, verticalAim)
+       rotation.toPlayer(player, horizontalAim, verticalAim)
 
         player.setPosAndPrevPos(currPos, oldPos)
 

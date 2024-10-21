@@ -3,6 +3,7 @@
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
  * https://github.com/CCBlueX/LiquidBounce/
  */
+
 package net.ccbluex.liquidbounce.ui.client.altmanager.menus
 
 import me.liuli.elixir.account.MicrosoftAccount
@@ -21,7 +22,6 @@ class GuiMicrosoftLoginProgress(val updateStatus: (String) -> Unit, val done: ()
 
     private var oAuthServer: OAuthServer? = null
     private var loginUrl: String? = null
-
     private var serverStopAlreadyCalled = false
 
     override fun initGui() {
@@ -29,22 +29,16 @@ class GuiMicrosoftLoginProgress(val updateStatus: (String) -> Unit, val done: ()
         try {
             oAuthServer = MicrosoftAccount.buildFromOpenBrowser(object : MicrosoftAccount.OAuthHandler {
 
-                /**
-                 * Called when the user has cancelled the authentication process or the thread has been interrupted
-                 */
                 override fun authError(error: String) {
                     serverStopAlreadyCalled = true
                     errorAndDone(error)
                     loginUrl = null
                 }
 
-                /**
-                 * Called when the user has completed authentication
-                 */
                 override fun authResult(account: MicrosoftAccount) {
                     serverStopAlreadyCalled = true
-
                     loginUrl = null
+
                     if (accountsConfig.accountExists(account)) {
                         errorAndDone("The account has already been added.")
                         return
@@ -55,9 +49,6 @@ class GuiMicrosoftLoginProgress(val updateStatus: (String) -> Unit, val done: ()
                     successAndDone()
                 }
 
-                /**
-                 * Called when the server has prepared the user for authentication
-                 */
                 override fun openUrl(url: String) {
                     loginUrl = url
                     MiscUtils.showURL(url)
@@ -87,17 +78,14 @@ class GuiMicrosoftLoginProgress(val updateStatus: (String) -> Unit, val done: ()
     }
 
     override fun actionPerformed(button: GuiButton) {
-        // Not enabled buttons should be ignored
         if (!button.enabled) {
             return
         }
 
         when (button.id) {
             0 -> loginUrl?.let { MiscUtils.showURL(it) }
-
             1 -> errorAndDone("Login cancelled.")
         }
-
 
         super.actionPerformed(button)
     }
