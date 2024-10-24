@@ -41,7 +41,7 @@ import java.awt.Color
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-object Backtrack : Module("Backtrack", Category.COMBAT, hideModule = false) {
+object Backtrack : Module("Backtrack", Category.COMBAT, hideModule = true) {
 
     private val nextBacktrackDelay by IntegerValue("NextBacktrackDelay", 0, 0..2000) { mode == "Modern" }
     private val delay by object : IntegerValue("Delay", 80, 0..700) {
@@ -657,5 +657,4 @@ object Backtrack : Module("Backtrack", Category.COMBAT, hideModule = false) {
         globalTimer.reset()
     }
 }
-
 data class BacktrackData(val x: Double, val y: Double, val z: Double, val time: Long)

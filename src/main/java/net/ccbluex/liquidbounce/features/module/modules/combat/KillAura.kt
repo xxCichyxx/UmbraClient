@@ -79,7 +79,7 @@ object KillAura : Module("KillAura", Category.COMBAT, Keyboard.KEY_R, hideModule
     private val simulateDoubleClicking by BoolValue("SimulateDoubleClicking", false) { !simulateCooldown }
 
     // CPS - Attack speed
-    private val cpsMode by ListValue("CPSMode", arrayOf("DragClick", "ButterFly", "Stabilized","Itter", "Legit", "Burst", "Random"), "Legit")
+    private val cpsMode by ListValue("CPSMode", arrayOf("DragClick", "ButterFly", "Stabilized", "Legit", "Random"), "Legit")
     private val maxCPSValue = object : IntegerValue("MaxCPS", 8, 1..20) {
         override fun onChange(oldValue: Int, newValue: Int) = newValue.coerceAtLeast(minCPS)
 

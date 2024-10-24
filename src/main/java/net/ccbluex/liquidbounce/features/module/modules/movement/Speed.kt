@@ -8,6 +8,7 @@ package net.ccbluex.liquidbounce.features.module.modules.movement
 import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.Category
+import net.ccbluex.liquidbounce.features.module.modules.exploit.disablermodes.other.BasicDisabler.basicTypePrefix
 import net.ccbluex.liquidbounce.features.module.modules.movement.speedmodes.aac.*
 import net.ccbluex.liquidbounce.features.module.modules.movement.speedmodes.hypixel.HypixelHop
 import net.ccbluex.liquidbounce.features.module.modules.movement.speedmodes.intave.IntaveHop14
@@ -82,15 +83,14 @@ object Speed : Module("Speed", Category.MOVEMENT, Keyboard.KEY_V, hideModule = f
         HypixelHop,
 
         // Other
-        BlocksMCSpeed,
         Boost,
         Frame,
         MiJump,
         OnGround,
         SlowHop,
         Legit,
-        CustomSpeed,
-        GlitchHop
+        CustomOld,
+        SilentTimer,
     )
 
     /**
@@ -123,32 +123,32 @@ object Speed : Module("Speed", Category.MOVEMENT, Keyboard.KEY_V, hideModule = f
 
     val mode = ListValue("Mode", modesList.map { it.modeName }.toTypedArray(), "NCPBHop")
 
-    // Custom Speed
-    val customY by FloatValue("CustomY", 0.42f, 0f..4f) { mode.get() == "Custom" }
-    val customGroundStrafe by FloatValue("CustomGroundStrafe", 1.6f, 0f..2f) { mode.get() == "Custom" }
-    val customAirStrafe by FloatValue("CustomAirStrafe", 0f, 0f..2f) { mode.get() == "Custom" }
-    val customGroundTimer by FloatValue("CustomGroundTimer", 1f, 0.1f..2f) { mode.get() == "Custom" }
-    val customAirTimerTick by IntegerValue("CustomAirTimerTick", 5, 1..20) { mode.get() == "Custom" }
-    val customAirTimer by FloatValue("CustomAirTimer", 1f, 0.1f..2f) { mode.get() == "Custom" }
+    // CustomOld Speed
+    val customoldY by FloatValue("CustomY", 0.42f, 0f..4f) { mode.get() == "CustomOld" }
+    val customoldGroundStrafe by FloatValue("CustomGroundStrafe", 1.6f, 0f..2f) { mode.get() == "CustomOld" }
+    val customoldAirStrafe by FloatValue("CustomAirStrafe", 0f, 0f..2f) { mode.get() == "CustomOld" }
+    val customoldGroundTimer by FloatValue("CustomGroundTimer", 1f, 0.1f..2f) { mode.get() == "CustomOld" }
+    val customoldAirTimerTick by IntegerValue("CustomAirTimerTick", 5, 1..20) { mode.get() == "CustomOld" }
+    val customoldAirTimer by FloatValue("CustomAirTimer", 1f, 0.1f..2f) { mode.get() == "CustomOld" }
+    val resetXZ by BoolValue("ResetXZ", false) { mode.get() == "CustomOld" }
+    val resetY by BoolValue("ResetY", false) { mode.get() == "CustomOld" }
+    val notOnConsuming by BoolValue("NotOnConsuming", false) { mode.get() == "CustomOld" }
+    val notOnFalling by BoolValue("NotOnFalling", false) { mode.get() == "CustomOld" }
+    val notOnVoid by BoolValue("NotOnVoid", true) { mode.get() == "CustomOld" }
 
-    // Extra options
-    val resetXZ by BoolValue("ResetXZ", false) { mode.get() == "Custom" }
-    val resetY by BoolValue("ResetY", false) { mode.get() == "Custom" }
-    val notOnConsuming by BoolValue("NotOnConsuming", false) { mode.get() == "Custom" }
-    val notOnFalling by BoolValue("NotOnFalling", false) { mode.get() == "Custom" }
-    val notOnVoid by BoolValue("NotOnVoid", true) { mode.get() == "Custom" }
+    // SilentTimer
+    val silentprefix = "Silent-"
+    val silentPacket by BoolValue("${silentprefix}Packet", false) { mode.get() == "SilentTimer" }
+    val silentPacketValue by IntegerValue("Packet-Value", 20, 0..20) { mode.get() == "SilentTimer" && silentPacket}
+    val silentPacketReset by IntegerValue("Packet-ResetDelay", 1000, 0..10000) { mode.get() == "SilentTimer" && silentPacket}
+    val silenttimer by BoolValue("${silentprefix}Timer", false) { mode.get() == "SilentTimer" }
+    val silenttimervalue by FloatValue("${silentprefix}TimerValue", 0.1f,0.1f..1.0f) { mode.get() == "SilentTimer" && silenttimer}
+    val silentlowtimer by BoolValue("${silentprefix}LowTimer", false) { mode.get() == "SilentTimer" && silenttimer}
+    val silentlowtimervalue by FloatValue("${silentprefix}LowTimerValue", 0.1f,0.1f..1.0f) { mode.get() == "SilentTimer" && silentlowtimer && silenttimer}
+    val silentbasespeed by BoolValue("${silentprefix}BaseSpeed", false) { mode.get() == "SilentTimer" }
+    val silentBaseSpeedValue by FloatValue("${silentprefix}BaseSpeedValue", 1f,0.1f..1f) { mode.get() == "SilentTimer" && silentbasespeed}
+    val silentAddBaseSpeedValue by FloatValue("${silentprefix}AddBaseSpeedValue", 0.1f,0.1f..1f) { mode.get() == "SilentTimer" && silentbasespeed}
 
-    // Matrix
-    val matrixSpeed by ListValue("Matrix-Mode", arrayOf("MatrixHop2", "Matrix6.6.1", "Matrix6.9.2"), "MatrixHop2") { mode.get() == "MatrixSpeeds" }
-    val matrixGroundStrafe by BoolValue("GroundStrafe-Hop2", false) { mode.get() == "MatrixSpeeds" }
-    val matrixVeloBoostValue by BoolValue("VelocBoost-6.6.1", true) { mode.get() == "MatrixSpeeds" }
-    val matrixTimerBoostValue by BoolValue("TimerBoost-6.6.1", false) { mode.get() == "MatrixSpeeds" }
-    val matrixUsePreMotion by BoolValue("UsePreMotion6.6.1", false) { mode.get() == "MatrixSpeeds" }
-
-    // VerusSpeed
-    val verusSpeed by ListValue("Verus-Mode", arrayOf("OldHop", "Float", "Ground", "YPort", "YPort2"), "OldHop")  { mode.get() == "VerusSpeeds" }
-    val verusYPortspeedValue by FloatValue("YPort-Speed", 0.61f, 0.1f.. 1f)  { mode.get() == "VerusSpeeds" }
-    val verusYPort2speedValue by FloatValue("YPort2-Speed", 0.61f, 0.1f.. 1f)  { mode.get() == "VerusSpeeds" }
 
     // TeleportCubecraft Speed
     val cubecraftPortLength by FloatValue("CubeCraft-PortLength", 1f, 0.1f..2f) { mode.get() == "TeleportCubeCraft" }

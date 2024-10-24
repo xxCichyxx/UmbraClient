@@ -24,7 +24,16 @@ object PacketUtils : MinecraftInstance(), Listenable {
     val queuedPackets = mutableListOf<Packet<*>>()
 
 
-    private var packets: ArrayList<Packet<INetHandlerPlayServer>> = ArrayList()
+    private var packets2: ArrayList<Packet<INetHandlerPlayServer>> = ArrayList()
+    private val packets = ArrayList<Packet<INetHandlerPlayServer>>()
+
+    fun handleSendPacket(packet: Packet<*>): Boolean {
+        if (packets.contains(packet)) {
+            packets.remove(packet)
+            return true
+        }
+        return false
+    }
 
     @EventTarget(priority = 2)
     fun onTick(event: GameTickEvent) {
@@ -45,11 +54,20 @@ object PacketUtils : MinecraftInstance(), Listenable {
     @JvmStatic
     fun sendPacketNoEvent(packet: Packet<INetHandlerPlayServer>) {
         packets.add(packet)
-        mc.getNetHandler().addToSendQueue(packet);
+        mc.netHandler.addToSendQueue(packet)
     }
     fun sendPacketSilent(packet: Packet<INetHandlerPlayServer>) {
-        packets.add(packet)
+        packets2.add(packet)
         mc.getNetHandler().addToSendQueue(packet);
+    }
+    fun getPacketType(packet: Packet<*>): PacketType {
+        val className = packet.javaClass.simpleName
+        if (className.startsWith("C", ignoreCase = true)) {
+            return PacketType.CLIENT
+        } else if (className.startsWith("S", ignoreCase = true)) {
+            return PacketType.SERVER
+        }
+        return PacketType.UNKNOWN
     }
 
     @EventTarget(priority = 2)

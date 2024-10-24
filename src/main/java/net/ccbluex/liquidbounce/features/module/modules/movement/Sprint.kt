@@ -10,7 +10,6 @@ import net.ccbluex.liquidbounce.event.PacketEvent
 import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.modules.combat.SuperKnockback
-import net.ccbluex.liquidbounce.features.module.modules.`fun`.Derp
 import net.ccbluex.liquidbounce.features.module.modules.player.scaffolds.Scaffold
 import net.ccbluex.liquidbounce.features.module.modules.player.scaffolds.Scaffold.motion2x1
 import net.ccbluex.liquidbounce.features.module.modules.player.scaffolds.Scaffold.motion2z1
@@ -20,6 +19,7 @@ import net.ccbluex.liquidbounce.features.module.modules.player.scaffolds.Scaffol
 import net.ccbluex.liquidbounce.features.module.modules.player.scaffolds.Scaffold.motionz2
 import net.ccbluex.liquidbounce.features.module.modules.player.scaffolds.Scaffold.sprintMode
 import net.ccbluex.liquidbounce.utils.MovementUtils.isMoving
+import net.ccbluex.liquidbounce.utils.MovementUtils.isMovingForward
 import net.ccbluex.liquidbounce.utils.RotationUtils.currentRotation
 import net.ccbluex.liquidbounce.utils.RotationUtils.rotationData
 import net.ccbluex.liquidbounce.utils.inventory.InventoryUtils.serverOpenInventory
@@ -81,10 +81,16 @@ object Sprint : Module("Sprint", Category.MOVEMENT, gameDetecting = false, hideM
 
         if (Scaffold.handleEvents()) {
             when (sprintMode) {
-                "Off" -> {
-                    player.isSprinting = false
-                    isSprinting = false
-                    return
+                "Legit" -> {
+                    if (!Scaffold.sprint) {
+                        player.isSprinting = false
+                        isSprinting = false
+                        return
+                    } else if (Scaffold.sprint && Scaffold.eagle == "Normal" && sprintMode == "Off" && isMoving && player.onGround && Scaffold.eagleSneaking && Scaffold.eagleSprint) {
+                        player.isSprinting = true
+                        isSprinting = true
+                        return
+                    }
                 }
                 "Vanilla" -> {
                     if (isMoving && player.onGround && Scaffold.sprint) {
@@ -147,17 +153,17 @@ object Sprint : Module("Sprint", Category.MOVEMENT, gameDetecting = false, hideM
                     }
                 }
                 "onGround" -> {
-                    if (mc.thePlayer.onGround && Scaffold.sprint) {
+                    if (player.onGround && Scaffold.sprint) {
                         player.isSprinting = true
                         isSprinting = true
-                    } else if (!mc.thePlayer.onGround){
+                    } else if (!player.onGround || !Scaffold.sprint) {
                         player.isSprinting = false
                         isSprinting = false
                     }
+                    return
                 }
             }
         }
-
         if (handleEvents() || alwaysCorrect) {
             player.isSprinting = !shouldStopSprinting(movementInput, isUsingItem)
             isSprinting = player.isSprinting

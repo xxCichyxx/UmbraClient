@@ -35,7 +35,9 @@ import net.ccbluex.liquidbounce.value.FloatValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.block.BlockBush
+import net.minecraft.block.state.IBlockState
 import net.minecraft.client.settings.GameSettings
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.init.Blocks.air
 import net.minecraft.item.ItemBlock
 import net.minecraft.item.ItemStack
@@ -142,7 +144,7 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_X, hideModule
     private val autojump0 by BoolValue("Jump", false)
     private val automaticjumps by IntegerValue("JumpTicks", 1, 1..450) { autojump0 }
     val sprint by BoolValue("Sprint", false)
-    val sprintMode by ListValue("SprintMode", arrayOf("Off","Vanilla","Packet","Motion","MotionPacket","onGround","OneTick"), "Off") { sprint }
+    val sprintMode by ListValue("SprintMode", arrayOf("Legit","Vanilla","Packet","Motion","MotionPacket","onGround","OneTick"), "Legit") { sprint }
     val motionx1 by FloatValue("motionX1", 0.94f, 0.70f..1.25f) { sprintMode == "Motion" }
     val motionz1 by FloatValue("motionZ1", 0.94f, 0.70f..1.25f) { sprintMode == "Motion" }
     val motionx2 by FloatValue("motionX2", 0.99f, 0.70f..1.25f) { sprintMode == "Motion" }
@@ -241,7 +243,10 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_X, hideModule
     ) { eagleValue.isSupported() && eagle != "Off" }
 
     // Rotation Options
-    val rotationMode by ListValue("Rotations", arrayOf("Off", "Normal", "Stabilized", "GodBridge","Test","Backward"), "Normal")
+    val rotationMode by ListValue("Rotations", arrayOf("Off", "Normal", "Stabilized", "Offset", "Backward", "Backward2"), "Normal")
+    val pitchMode by ListValue("PitchMode", arrayOf("Legit", "Vanilla", "Vanilla2", "Custom"), "Legit")
+    val pitchCorrectValue = FloatValue("PitchCorrect", 80.0f, 0.0f.. 90.0f) { pitchMode == "Legit" }
+    val pitchCustomValue = FloatValue("PitchStableValue", 90.0f, 0.0f.. 90.0f) { pitchMode == "Custom" }
     val smootherMode by ListValue(
         "SmootherMode",
         arrayOf("Linear", "Relative"),
@@ -257,8 +262,6 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_X, hideModule
     }
 
     // Search options
-    val pitchMode by ListValue("PitchMode", arrayOf("Static", "Vanilla", "Legit", "Custom", "StaticYaw", "Offset"), "Static")
-    val yawMode by ListValue("YawMode", arrayOf("StaticYaw", "Offset", "Default"), "Default")
     val searchMode by ListValue("SearchMode", arrayOf("Area", "Center","FullBlock"), "Area") { scaffoldMode != "GodBridge" }
     private val minDist by FloatValue("MinDist", 0f, 0f..0.2f) { scaffoldMode !in arrayOf("GodBridge", "Telly") }
 
@@ -498,12 +501,6 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_X, hideModule
             }
         }
 
-        if (autojump0 && mc.thePlayer.ticksExisted % automaticjumps == 0) {
-            if (mc.thePlayer.onGround) {
-                mc.thePlayer.jump()
-            }
-        }
-
         if (isSneakEnabled){
             ticksCouter0++;
             if(!SneakJump){
@@ -590,12 +587,14 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_X, hideModule
     fun onStrafe(event: StrafeEvent) {
         val player = mc.thePlayer
 
-        // Jumping needs to be done here, so it doesn't get detected by movement-sensitive anti-cheats.
         if (scaffoldMode == "Telly" && player.onGround && MovementUtils.isMoving && currRotation == player.rotation && ticksUntilJump >= jumpTicks) {
             player.tryJump()
 
             ticksUntilJump = 0
             jumpTicks = randomDelay(minJumpTicks.get(), maxJumpTicks.get())
+        }
+        if (autojump0 && mc.thePlayer.ticksExisted % automaticjumps == 0 && mc.thePlayer.onGround) {
+            player.tryJump()
         }
     }
 
@@ -1068,14 +1067,7 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_X, hideModule
     ): Boolean {
         val player = mc.thePlayer ?: return false
 
-        // Ustawienie rotacji na podstawie pitchMode
-        val rotation = when (pitchMode) {
-            "Static" -> Rotation(player.rotationYaw, 90.0f) // Zawsze patrz w dół
-            "Custom" -> Rotation(player.rotationYaw, 45.0f) // Customowy kąt pochylenia głowy
-            else -> player.rotation // Domyślny yaw/pitch
-        }
-
-        // Sprawdzanie, czy blok może zostać zastąpiony
+        // Check if the block can be replaced
         if (!isReplaceable(blockPosition)) {
             if (autoF5) mc.gameSettings.thirdPersonView = 0
             return false
@@ -1088,16 +1080,16 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_X, hideModule
         var placeRotation: PlaceRotation? = null
         var currPlaceRotation: PlaceRotation?
 
-        // Pętla iterująca po stronach sąsiednich bloków
+        // Loop through neighboring blocks
         for (side in EnumFacing.values().filter { !horizontalOnly || it.axis != EnumFacing.Axis.Y }) {
             val neighbor = blockPosition.offset(side)
 
-            // Sprawdzenie, czy sąsiedni blok można kliknąć
+            // Check if the neighboring block can be clicked
             if (!canBeClicked(neighbor)) {
                 continue
             }
 
-            // Tryb FullBlock - przeszukiwanie wielu miejsc na całym bloku
+            // FullBlock mode - searching multiple positions on the block
             if (searchMode == "FullBlock") {
                 for (x in 0.0..1.0 step 0.5) {
                     for (y in 0.0..1.0 step 0.5) {
@@ -1110,7 +1102,7 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_X, hideModule
                 }
             }
 
-            // Tryb area lub gdy GodBridge jest włączony
+            // Area mode or when GodBridge is enabled
             if (!area || isGodBridgeEnabled) {
                 currPlaceRotation =
                     findTargetPlace(blockPosition, neighbor, Vec3(0.5, 0.5, 0.5), side, eyes, maxReach, raycast)
@@ -1118,7 +1110,7 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_X, hideModule
 
                 placeRotation = compareDifferences(currPlaceRotation, placeRotation)
             } else {
-                // Tryb przeszukiwania w obszarze (różne pozycje w bloku)
+                // Area search mode (different positions in the block)
                 for (x in 0.1..0.9 step 0.2) {
                     for (y in 0.1..0.9 step 0.2) {
                         for (z in 0.1..0.9 step 0.2) {
@@ -1133,17 +1125,68 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_X, hideModule
             }
         }
 
-        // Jeżeli nie znaleziono odpowiedniej rotacji do postawienia bloku, zwróć false
+        // If no valid placement rotation was found, return false
         placeRotation ?: return false
 
-        // Ustawianie rotacji głowy, jeśli tryb rotacji jest aktywny
+        // Set head rotation if rotation mode is active
         if (rotationMode != "Off" && !isGodBridgeEnabled) {
-            setRotation(placeRotation.rotation, if (scaffoldMode == "Telly") 1 else keepTicks)
+            // Check if the player is moving
+            if (rotationMode == "Backward2" && MovementUtils.isMoving) {
+                val correctedRotation = getCorrectedBackwardRotation(player, placeRotation.rotation)
+                setRotation(correctedRotation, if (scaffoldMode == "Telly") 1 else keepTicks)
+            } else {
+                setRotation(placeRotation.rotation, if (scaffoldMode == "Telly") 1 else keepTicks)
+            }
         }
 
-        // Ustawienie rotacji bloku do postawienia
+        // Set the block placement rotation
         this.placeRotation = placeRotation
         return true
+    }
+    private fun getCorrectedBackwardRotation(player: EntityPlayer, desiredRotation: Rotation): Rotation {
+        // Check if the player is near an edge
+        val nearEdge = detectEdge(player)
+        var currentYaw = MovementUtils.movingYaw
+
+        // Adjust yaw based on whether the player is near an edge
+        if (nearEdge) {
+            currentYaw = adjustYawForEdgePlacement(currentYaw, desiredRotation.yaw)
+        } else {
+            // Standard backward adjustment
+            currentYaw -= 180.0f
+        }
+
+        return Rotation(currentYaw, desiredRotation.pitch).fixedSensitivity()
+    }
+
+    /**
+     * Adjust the yaw when the player is near the edge to facilitate block placement.
+     */
+    private fun adjustYawForEdgePlacement(currentYaw: Float, desiredYaw: Float): Float {
+        // Implement logic to smoothly adjust the yaw
+        // This could include checking movement direction and the desired block placement angle
+        val yawDifference = (desiredYaw - currentYaw + 180) % 360 - 180 // Calculate the difference within -180 to 180 range
+        val adjustment = if (yawDifference > 0) 5.0f else -5.0f // Adjust in small increments
+        return currentYaw + adjustment // Adjust the yaw smoothly
+    }
+
+    fun detectEdge(player: EntityPlayer): Boolean {
+        // Check if the player's vertical motion is downward and if they are near an edge
+        return player.motionY < -0.15 && isPlayerNearEdge(player)
+    }
+
+    fun isPlayerNearEdge(player: EntityPlayer): Boolean {
+        val pos = player.position
+        val blocksAround = listOf(
+            BlockPos(pos.x + 1, pos.y, pos.z), // Right
+            BlockPos(pos.x - 1, pos.y, pos.z), // Left
+            BlockPos(pos.x, pos.y, pos.z + 1), // Forward
+            BlockPos(pos.x, pos.y, pos.z - 1)  // Backward
+        )
+        // Check if all adjacent blocks are air using the isAir method
+        return blocksAround.all { blockPos ->
+            mc.theWorld.getBlockState(blockPos).block.isAir(mc.theWorld, blockPos)
+        }
     }
 
     /**
@@ -1196,45 +1239,36 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_X, hideModule
         }
 
         val player = mc.thePlayer
-
-        val smoothSpeed = 0.5f
-
         var rotation = toRotation(vec, true).fixedSensitivity()
-
         rotation = when (pitchMode) {
-            "Static" -> Rotation(rotation.yaw, 90.0f) // Static - zawsze 90 stopni (np. patrzenie prosto w dół)
-            "Vanilla" -> rotation // Vanilla - domyślne obliczanie pitch
-            "Legit" -> Rotation(rotation.yaw, rotation.pitch.coerceAtMost(80.0f)) // Legit - ograniczenie pitch, np. max 80 stopni
-            "Custom" -> {
-                // Custom - przykład na dostosowanie kąta ręcznie
-                val customPitch = 45.0f // Tu możesz wprowadzić własną wartość lub dodać ją do UI
-                Rotation(rotation.yaw, customPitch)
-            }
-            "StaticYaw" -> Rotation(180.0f, rotation.pitch) // StaticYaw - statyczny obrót yaw, np. zawsze patrzy w jednym kierunku
-            "Offset" -> Rotation(rotation.yaw + 15.0f, rotation.pitch) // Offset - rotacja z offsetem
-            else -> rotation // Domyślne zachowanie
-        }.fixedSensitivity()
-        rotation = when (yawMode) {
-            "StaticYaw" -> Rotation(90.0f, rotation.pitch) // StaticYaw - zawsze patrzy np. na wschód (yaw 90 stopni)
-            "Offset" -> Rotation(player.rotationYaw + 15.0f, rotation.pitch) // Offset - dodawanie przesunięcia np. o 15 stopni
-            else -> rotation // Domyślne obliczanie yaw
+            "Custom" -> Rotation(player.rotationYaw ,pitchCustomValue.get())
+            "Vanilla" -> rotation
+            "Vanilla2" -> Rotation(player.rotationYaw, rotation.pitch)
+            "Legit" -> Rotation(player.rotationYaw, rotation.pitch.coerceAtMost(pitchCorrectValue.get()))
+            else -> rotation
         }.fixedSensitivity()
         rotation = when (rotationMode) {
+            "Normal" -> rotation
+            "Offset" -> Rotation(player.rotationYaw + 15.0f, rotation.pitch)
             "Stabilized" -> Rotation(round(rotation.yaw / 45f) * 45f, rotation.pitch)
-            "Test" -> {
+            "Backward" -> {
                 if (player != null) {
-                    val targetYaw = player.rotationYaw + 180f
-                    val newPitch = rotation.pitch
-                    Rotation(targetYaw, newPitch).fixedSensitivity()
+                    var currentYaw = MovementUtils.movingYaw - 180
+                    val currentPitch = rotation.pitch
+                    val nearEdge = detectEdge(player)
+                    if (nearEdge) {
+                        currentYaw = adjustYawForPlacement(currentYaw)
+                    }
+                    val smoothYaw = smoothYawAdjustment(MovementUtils.movingYaw - 180, currentYaw, tickRate = 5)
+                    Rotation(smoothYaw, currentPitch).fixedSensitivity()
                 } else {
                     rotation
                 }
             }
-            "Backward" -> {
+            "Backward2" -> {
                 if (player != null) {
-                    val calcyaw = ((MovementUtils.movingYaw - 180) / 45).roundToInt() * 45
-                    var calcpitch = rotation.pitch
-                    Rotation(calcyaw.toFloat(), calcpitch).fixedSensitivity()
+                    val smoothYaw = smoothYawAdjustment(MovementUtils.movingYaw - 180,rotation.yaw - 180, tickRate = 2)
+                    Rotation(smoothYaw, rotation.pitch).fixedSensitivity()
                 } else {
                     rotation
                 }
@@ -1264,6 +1298,14 @@ object Scaffold : Module("Scaffold", Category.PLAYER, Keyboard.KEY_X, hideModule
         }
 
         return null
+    }
+    fun adjustYawForPlacement(currentYaw: Float): Float {
+        return currentYaw + 5.0f
+    }
+
+    // Funkcja płynnego dostosowania yaw za pomocą ticków
+    fun smoothYawAdjustment(startYaw: Float, targetYaw: Float, tickRate: Int): Float {
+        return startYaw + (targetYaw - startYaw) / tickRate // Płynne dostosowanie yaw
     }
 
     private fun performBlockRaytrace(rotation: Rotation, maxReach: Float): MovingObjectPosition? {

@@ -59,7 +59,6 @@ object UmbraClient {
      */
     const val CLIENT_NAME = "UmbraClient"
     const val CLIENTTITTLE_NAME = "Umbra Client"
-    const val CLIENT_CHAT = "§5D§de§3b§bu§6g §r"
     const val CLIENT_AUTHOR = "xxCichyxx"
     const val CLIENT_CLOUD = "https://cloud.liquidbounce.net/LiquidBounce"
     const val CLIENT_WEBSITE = "blockbypass.pl"
@@ -84,7 +83,7 @@ object UmbraClient {
     // Managers
     val moduleManager = ModuleManager
     val commandManager = CommandManager
-    val eventManager = EventManager
+    var eventManager = EventManager
     val fileManager = FileManager
     val scriptManager = ScriptManager
     var combatManager = CombatManager

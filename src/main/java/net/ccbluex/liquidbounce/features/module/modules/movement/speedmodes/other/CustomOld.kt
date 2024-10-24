@@ -6,12 +6,12 @@
 package net.ccbluex.liquidbounce.features.module.modules.movement.speedmodes.other
 
 import net.ccbluex.liquidbounce.features.module.modules.movement.Speed
-import net.ccbluex.liquidbounce.features.module.modules.movement.Speed.customAirStrafe
-import net.ccbluex.liquidbounce.features.module.modules.movement.Speed.customAirTimer
-import net.ccbluex.liquidbounce.features.module.modules.movement.Speed.customAirTimerTick
-import net.ccbluex.liquidbounce.features.module.modules.movement.Speed.customGroundStrafe
-import net.ccbluex.liquidbounce.features.module.modules.movement.Speed.customGroundTimer
-import net.ccbluex.liquidbounce.features.module.modules.movement.Speed.customY
+import net.ccbluex.liquidbounce.features.module.modules.movement.Speed.customoldAirStrafe
+import net.ccbluex.liquidbounce.features.module.modules.movement.Speed.customoldAirTimer
+import net.ccbluex.liquidbounce.features.module.modules.movement.Speed.customoldAirTimerTick
+import net.ccbluex.liquidbounce.features.module.modules.movement.Speed.customoldGroundStrafe
+import net.ccbluex.liquidbounce.features.module.modules.movement.Speed.customoldGroundTimer
+import net.ccbluex.liquidbounce.features.module.modules.movement.Speed.customoldY
 import net.ccbluex.liquidbounce.features.module.modules.movement.Speed.notOnConsuming
 import net.ccbluex.liquidbounce.features.module.modules.movement.Speed.notOnFalling
 import net.ccbluex.liquidbounce.features.module.modules.movement.Speed.notOnVoid
@@ -26,7 +26,7 @@ import net.minecraft.item.ItemBucketMilk
 import net.minecraft.item.ItemFood
 import net.minecraft.item.ItemPotion
 
-object CustomSpeed : SpeedMode("Custom") {
+object CustomOld : SpeedMode("CustomOld") {
 
     override fun onMotion() {
         val player = mc.thePlayer ?: return
@@ -48,19 +48,19 @@ object CustomSpeed : SpeedMode("Custom") {
 
         if (isMoving) {
             if (player.onGround) {
-                if (customGroundStrafe > 0) {
-                    strafe(customGroundStrafe)
+                if (customoldGroundStrafe > 0) {
+                    strafe(customoldGroundStrafe)
                 }
 
-                mc.timer.timerSpeed = customGroundTimer
-                player.motionY = customY.toDouble()
+                mc.timer.timerSpeed = customoldGroundTimer
+                player.motionY = customoldY.toDouble()
             } else {
-                if (customAirStrafe > 0) {
-                    strafe(customAirStrafe)
+                if (customoldAirStrafe > 0) {
+                    strafe(customoldAirStrafe)
                 }
 
-                if (player.ticksExisted % customAirTimerTick == 0) {
-                    mc.timer.timerSpeed = customAirTimer
+                if (player.ticksExisted % customoldAirTimerTick == 0) {
+                    mc.timer.timerSpeed = customoldAirTimer
                 } else {
                     mc.timer.timerSpeed = 1f
                 }
@@ -76,5 +76,4 @@ object CustomSpeed : SpeedMode("Custom") {
 
         super.onEnable()
     }
-
 }
